@@ -1,0 +1,9 @@
++incdir+../rtl/common
+../rtl/common/audio_sync_fifo.sv
+../rtl/dsp/audio_gain.sv
+../rtl/dsp/audio_mixer2.sv
+../rtl/path/audio_hub_rx_path.sv
+../rtl/path/audio_hub_tx_path.sv
+../rtl/apb/audio_hub_apb_regs.sv
+../rtl/dwc_i2s_audio_hub_top.sv
+../tb/tb_dwc_i2s_audio_hub_smoke.sv

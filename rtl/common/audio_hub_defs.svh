@@ -1,0 +1,18 @@
+`ifndef AUDIO_HUB_DEFS_SVH
+`define AUDIO_HUB_DEFS_SVH
+
+`define AUDIO_HUB_CTRL      12'h000
+`define AUDIO_HUB_RX_CFG    12'h004
+`define AUDIO_HUB_TX_CFG    12'h008
+`define AUDIO_HUB_DMA_CFG   12'h00C
+`define AUDIO_HUB_RX_GAIN   12'h010
+`define AUDIO_HUB_TX_GAIN0  12'h014
+`define AUDIO_HUB_TX_GAIN1  12'h018
+`define AUDIO_HUB_MIX_CFG   12'h01C
+`define AUDIO_HUB_STATUS    12'h020
+`define AUDIO_HUB_IRQ_STAT  12'h024
+`define AUDIO_HUB_IRQ_EN    12'h028
+`define AUDIO_HUB_RXDATA    12'h030
+`define AUDIO_HUB_TXDATA    12'h034
+
+`endif
