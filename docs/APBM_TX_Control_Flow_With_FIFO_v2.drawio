@@ -1,0 +1,196 @@
+<mxfile host="Electron" agent="ChatGPT">
+  <diagram id="apbm_tx_control_flow_v2" name="APBM_TX_Control_Flow_With_FIFO">
+    <mxGraphModel dx="2202" dy="415" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2339" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;" value="APBM TX Control Flow with TX FIFO" vertex="1">
+          <mxGeometry height="40" width="900" x="80" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="stream_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=15;fontStyle=1;" value="Independent TX Fill Path: Crossbar → APBM_TX_FIFO" vertex="1">
+          <mxGeometry height="40" width="430" x="-600" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="fifo_space" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="APBM_TX_FIFO&lt;br&gt;has space?" vertex="1">
+          <mxGeometry height="90" width="210" x="-540" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="drive_ready" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#d5e8d4;strokeColor=#82b366;" value="Drive tx_ready = 1&lt;br&gt;to Crossbar" vertex="1">
+          <mxGeometry height="70" width="230" x="-550" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="valid_chk" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="tx_valid == 1?" vertex="1">
+          <mxGeometry height="85" width="200" x="-535" y="475" as="geometry" />
+        </mxCell>
+        <mxCell id="push_fifo" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="PUSH APBM_TX_FIFO&lt;br&gt;write {tx_data}" vertex="1">
+          <mxGeometry height="80" width="260" x="-565" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="backpressure" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#f8cecc;strokeColor=#b85450;" value="Drive tx_ready = 0&lt;br&gt;Backpressure Crossbar" vertex="1">
+          <mxGeometry height="75" width="240" x="-230" y="222.5" as="geometry" />
+        </mxCell>
+        <mxCell id="idle" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#ffffff;strokeColor=#000000;" value="IDLE" vertex="1">
+          <mxGeometry height="55" width="130" x="790" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="en_chk" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="apbm_en &amp;&amp; tx_en?" vertex="1">
+          <mxGeometry height="90" width="210" x="750" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="bypass" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Bypass APBM&lt;br&gt;DMA/ABUS ↔ DWC_i2s" vertex="1">
+          <mxGeometry height="75" width="230" x="1070" y="187.5" as="geometry" />
+        </mxCell>
+        <mxCell id="req_chk" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="dma_tx_req == 1&lt;br&gt;&amp;&amp; tx_fifo_level &gt;= burst_len?" vertex="1">
+          <mxGeometry height="100" width="270" x="720" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="single_chk" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="dma_tx_single == 1&lt;br&gt;&amp;&amp; tx_fifo_level &gt;= 1?" vertex="1">
+          <mxGeometry height="100" width="260" x="1060" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="wait_data" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#f8cecc;strokeColor=#b85450;" value="WAIT_TX_FIFO_DATA&lt;br&gt;No APB write&lt;br&gt;No dma_tx_ack" vertex="1">
+          <mxGeometry height="85" width="240" x="1380" y="337.5" as="geometry" />
+        </mxCell>
+        <mxCell id="burst_init" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="TX_BURST_INIT&lt;br&gt;service_type = BURST&lt;br&gt;target_cnt = tx_msize&lt;br&gt;cnt = 0" vertex="1">
+          <mxGeometry height="100" width="280" x="470" y="455" as="geometry" />
+        </mxCell>
+        <mxCell id="single_init" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="TX_SINGLE_INIT&lt;br&gt;service_type = SINGLE&lt;br&gt;target_cnt = 1&lt;br&gt;cnt = 0" vertex="1">
+          <mxGeometry height="90" width="250" x="1065" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="pop_fifo" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#d5e8d4;strokeColor=#82b366;" value="POP APBM_TX_FIFO&lt;br&gt;load sample_data&lt;br&gt;load sample_last" vertex="1">
+          <mxGeometry height="90" width="260" x="795" y="655" as="geometry" />
+        </mxCell>
+        <mxCell id="yNm1qX3TdU3s0rTYZHoI-1" edge="1" parent="1" source="apb_setup" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="pop_fifo" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="apb_setup" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="APB_WRITE_SETUP&lt;br&gt;psel=1, penable=0&lt;br&gt;pwrite=1, paddr=I2S_&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;TXFIFO_reg&lt;/span&gt;&lt;div&gt;pwdata=sample_data&lt;/div&gt;" vertex="1">
+          <mxGeometry height="105" width="290" x="780" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="apb_access" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="APB_WRITE_ACCESS&lt;br&gt;psel=1, penable=1&lt;br&gt;wait pready" vertex="1">
+          <mxGeometry height="85" width="260" x="795" y="950" as="geometry" />
+        </mxCell>
+        <mxCell id="cnt_update" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="CNT_UPDATE&lt;br&gt;cnt++" vertex="1">
+          <mxGeometry height="65" width="220" x="815" y="1085" as="geometry" />
+        </mxCell>
+        <mxCell id="done_chk" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="cnt == target_cnt?" vertex="1">
+          <mxGeometry height="90" width="210" x="820" y="1190" as="geometry" />
+        </mxCell>
+        <mxCell id="ack_assert" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#f8cecc;strokeColor=#b85450;" value="TX_ACK_ASSERT&lt;br&gt;dma_tx_ack = 1" vertex="1">
+          <mxGeometry height="70" width="230" x="810" y="1325" as="geometry" />
+        </mxCell>
+        <mxCell id="wait_low" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#f8cecc;strokeColor=#b85450;" value="TX_ACK_WAIT_REQ_LOW&lt;br&gt;hold dma_tx_ack=1&lt;br&gt;until corresponding request deasserts" vertex="1">
+          <mxGeometry height="95" width="300" x="775" y="1435" as="geometry" />
+        </mxCell>
+        <mxCell id="low_chk" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Corresponding request&lt;br&gt;deasserted?" vertex="1">
+          <mxGeometry height="95" width="220" x="815" y="1575" as="geometry" />
+        </mxCell>
+        <mxCell id="ack_deassert" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#f8cecc;strokeColor=#b85450;" value="TX_ACK_DEASSERT&lt;br&gt;dma_tx_ack = 0" vertex="1">
+          <mxGeometry height="70" width="230" x="810" y="1720" as="geometry" />
+        </mxCell>
+        <mxCell id="note1" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Priority:&lt;br&gt;dma_tx_req has higher priority than dma_tx_single.&lt;br&gt;dma_tx_req means TX FIFO has enough space for burst service." vertex="1">
+          <mxGeometry height="125" width="270" x="1350" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="note2" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Important:&lt;br&gt;Do not start burst service unless APBM_TX_FIFO contains at least burst_len samples." vertex="1">
+          <mxGeometry height="105" width="270" x="1350" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="note3" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="ACK closed loop:&lt;br&gt;APBM asserts dma_tx_ack after APB writes finish.&lt;br&gt;DWC_i2s deasserts request after seeing ack.&lt;br&gt;APBM then deasserts ack." vertex="1">
+          <mxGeometry height="145" width="280" x="1350" y="1325" as="geometry" />
+        </mxCell>
+        <mxCell id="note4" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="TX direction:&lt;br&gt;Crossbar fills APBM_TX_FIFO.&lt;br&gt;APBM drains APBM_TX_FIFO into DWC_i2s TXDATA." vertex="1">
+          <mxGeometry height="110" width="280" x="-600" y="755" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" edge="1" parent="1" source="fifo_space" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="drive_ready" value="Y">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" edge="1" parent="1" source="fifo_space" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="backpressure" value="N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" edge="1" parent="1" source="backpressure" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="fifo_space" value="retry">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s4" edge="1" parent="1" source="drive_ready" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="valid_chk" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s5" edge="1" parent="1" source="valid_chk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="push_fifo" value="Y">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="idle" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="en_chk" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="en_chk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="bypass" value="N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="en_chk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="req_chk" value="Y">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="req_chk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="burst_init" value="Y">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="req_chk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="single_chk" value="N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="single_chk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="single_init" value="Y">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="single_chk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="wait_data" value="N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="burst_init" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="pop_fifo" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="610" y="610" />
+              <mxPoint x="925" y="610" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="single_init" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="pop_fifo" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1190" y="610" />
+              <mxPoint x="925" y="610" />
+            </Array>
+            <mxPoint x="1070" y="550" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="pop_fifo" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="apb_setup" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="apb_setup" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="apb_access" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="apb_access" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;entryX=1;entryY=0.75;entryDx=0;entryDy=0;exitX=1.003;exitY=0.142;exitDx=0;exitDy=0;exitPerimeter=0;" target="apb_access" value="!pready">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1100" y="962" />
+              <mxPoint x="1100" y="1014" />
+            </Array>
+            <mxPoint x="1060" y="970" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="apb_access" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="cnt_update" value="pready">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="cnt_update" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="done_chk" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="done_chk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="ack_assert" value="Y">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e18" edge="1" parent="1" source="ack_assert" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="wait_low" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e19" edge="1" parent="1" source="wait_low" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="low_chk" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e20" edge="1" parent="1" source="low_chk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="wait_low" value="N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e21" edge="1" parent="1" source="low_chk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="ack_deassert" value="Y">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="yNm1qX3TdU3s0rTYZHoI-3" edge="1" parent="1" source="ack_deassert" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" target="req_chk" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="420" y="1755" />
+              <mxPoint x="420" y="355" />
+            </Array>
+            <mxPoint x="520" y="1700" as="sourcePoint" />
+            <mxPoint x="380" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
