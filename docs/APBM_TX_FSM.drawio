@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="fH5n9Me7nUtPE_JYtTzi">
-    <mxGraphModel dx="673" dy="380" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="815" dy="460" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -88,7 +88,7 @@
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-19" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="RX_ACK：&lt;div&gt;dma_rx_ack = 1&lt;/div&gt;" vertex="1">
           <mxGeometry height="70" width="250" x="490" y="1227.5" as="geometry" />
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-20" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="TX_REQ_IDLE:&lt;div&gt;dma_tx_ack=0&lt;/div&gt;&lt;div&gt;psel=0, penable=0,&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-20" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="TX_REQ_IDLE:&lt;div&gt;dma_tx_ack=0&lt;/div&gt;&lt;div&gt;psel=0, penable=0,&lt;br&gt;&lt;/div&gt;&lt;div&gt;tx_ready = 0&lt;br&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="120" width="250" x="470" y="390" as="geometry" />
         </mxCell>
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-21" edge="1" parent="1" source="Ly1VW1kiYANL2SHkxWqd-16" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="Ly1VW1kiYANL2SHkxWqd-2" value="">
