@@ -71,7 +71,7 @@
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-15" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="WAIT_TX_FIFO_DATA:&lt;div&gt;tx_fifo_wr = 0&lt;/div&gt;&lt;div&gt;tx_fifo_rd = 0&lt;br&gt;&lt;/div&gt;&lt;div&gt;penable = 0, psel = 0&lt;/div&gt;" vertex="1">
           <mxGeometry height="85" width="250" x="480" y="662.5" as="geometry" />
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="RX_ACK" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="TX_ACK" vertex="1">
           <mxGeometry height="55" width="120" x="960" y="1270" as="geometry" />
         </mxCell>
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-17" edge="1" parent="1" source="Ly1VW1kiYANL2SHkxWqd-47" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="Ly1VW1kiYANL2SHkxWqd-16" value="">
@@ -85,7 +85,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-19" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="TX_ACK：&lt;div&gt;dma_rx_ack = 1&lt;/div&gt;" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-19" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="TX_ACK：&lt;div&gt;dma_tx_ack = 1&lt;/div&gt;" vertex="1">
           <mxGeometry height="70" width="250" x="470" y="1255" as="geometry" />
         </mxCell>
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-20" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="TX_REQ_IDLE:&lt;div&gt;dma_tx_ack=0&lt;/div&gt;&lt;div&gt;psel=0, penable=0,&lt;br&gt;&lt;/div&gt;&lt;div&gt;tx_ready = 0&lt;br&gt;&lt;/div&gt;" vertex="1">
@@ -102,7 +102,7 @@
             <mxPoint x="850" y="465" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-22" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-21" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;div&gt;(service_type == MULTI&amp;nbsp; &amp;amp;&amp;amp; dma_rx_req&amp;nbsp; &amp;nbsp; == 0) ||&lt;/div&gt;&lt;div&gt;(service_type == SINGLE &amp;amp;&amp;amp; dma_rx_single == 0)&lt;/div&gt;" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-22" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-21" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;div&gt;(service_type == MULTI&amp;nbsp; &amp;amp;&amp;amp; dma_tx_req&amp;nbsp; &amp;nbsp; == 0) ||&lt;/div&gt;&lt;div&gt;(service_type == SINGLE &amp;amp;&amp;amp; dma_tx_single == 0)&lt;/div&gt;" vertex="1">
           <mxGeometry relative="1" x="-0.9589" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
