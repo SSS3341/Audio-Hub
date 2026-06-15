@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="fH5n9Me7nUtPE_JYtTzi">
-    <mxGraphModel dx="228" dy="129" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="673" dy="380" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -80,7 +80,7 @@
             <mxPoint x="1150" y="1140" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-18" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-17" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="trans_cnt == target_cnt" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-18" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-17" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="tx_trans_cnt == target_cnt" vertex="1">
           <mxGeometry relative="1" x="0.0089" y="-1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
@@ -216,7 +216,7 @@
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-47" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="TX_CNT_UPDATE" vertex="1">
           <mxGeometry height="55" width="120" x="960" y="1160" as="geometry" />
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-48" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="TX_CNT_UPDATE：&lt;div&gt;dma_rx_ack = 1&lt;/div&gt;" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-48" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="TX_CNT_UPDATE：&lt;div&gt;tx_trans_cnt = cnt +1&lt;/div&gt;" vertex="1">
           <mxGeometry height="70" width="250" x="470" y="1140" as="geometry" />
         </mxCell>
       </root>
