@@ -1,6 +1,6 @@
-<mxfile host="Electron" agent="ChatGPT">
+<mxfile host="app.diagrams.net" agent="ChatGPT">
   <diagram id="apbm_rx_fetch_fsm" name="APBM_RX_Fetch_FSM">
-    <mxGraphModel dx="4502" dy="2156" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2339" math="0" shadow="0">
+    <mxGraphModel dx="2514" dy="486" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2339" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -236,7 +236,7 @@
         <mxCell id="b5V3izeqS-97gPEoPy1i-80" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="RX_FIFO_PUSH:&lt;div&gt;&amp;nbsp;trans_cnt = cnt +1&lt;br&gt;&lt;/div&gt;&lt;div&gt;rx_fifo_wr = 1&lt;br&gt;fifo_wdata = prdata_pipe&lt;/div&gt;" vertex="1">
           <mxGeometry height="85" width="250" x="-210" y="970" as="geometry" />
         </mxCell>
-        <mxCell id="b5V3izeqS-97gPEoPy1i-81" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="APBM_IDLE" vertex="1">
+        <mxCell id="b5V3izeqS-97gPEoPy1i-81" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;dashed=1;dashPattern=8 8;" value="APBM_IDLE" vertex="1">
           <mxGeometry height="55" width="120" x="270" y="132.5" as="geometry" />
         </mxCell>
         <mxCell id="b5V3izeqS-97gPEoPy1i-82" edge="1" parent="1" source="b5V3izeqS-97gPEoPy1i-81" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="idle" value="">
