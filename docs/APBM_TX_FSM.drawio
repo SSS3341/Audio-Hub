@@ -139,7 +139,7 @@
             <mxPoint x="1040" y="787.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-30" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-29" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="rx_fifo_full = 0" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-30" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-29" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="tx_fifo_empty = 0" vertex="1">
           <mxGeometry relative="1" x="-0.1138" y="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
