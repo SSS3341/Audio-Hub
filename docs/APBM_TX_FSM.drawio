@@ -242,7 +242,7 @@
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-54" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Drive Stream:&lt;div&gt;tx_ready = 1&lt;/div&gt;" vertex="1">
           <mxGeometry height="120" width="250" x="1920" y="407.5" as="geometry" />
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-55" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="POP_RX_FIFO" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-55" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="PUSH_TX_FIFO" vertex="1">
           <mxGeometry height="55" width="130" x="2295" y="577.5" as="geometry" />
         </mxCell>
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-56" edge="1" parent="1" source="Ly1VW1kiYANL2SHkxWqd-51" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="Ly1VW1kiYANL2SHkxWqd-55" value="">
@@ -251,12 +251,12 @@
             <mxPoint x="2420" y="510" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-57" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-56" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="rx_ready = 1" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-57" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-56" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="tx_valid = 1" vertex="1">
           <mxGeometry relative="1" x="-0.0537" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-58" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="POP_RX_FIFO:&lt;div&gt;rx_valid = 1&lt;/div&gt;&lt;div&gt;rx_data = fifo_rd_data_pipe&lt;/div&gt;" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-58" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="PUSH_TX_FIFO:&lt;div&gt;tx_fifo_wr = 1&lt;/div&gt;&lt;div&gt;tx_fifo_data = tx_data&lt;/div&gt;" vertex="1">
           <mxGeometry height="70" width="250" x="1920" y="570" as="geometry" />
         </mxCell>
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-59" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="TX_STREAM_IDLE:&lt;div&gt;tx_ready = 0&lt;/div&gt;" vertex="1">
@@ -304,7 +304,7 @@
             <mxPoint x="2510" y="510" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-65" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-64" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="tx_valid = 1" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-65" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-64" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="tx_valid = 0" vertex="1">
           <mxGeometry relative="1" x="-0.1698" y="2" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
