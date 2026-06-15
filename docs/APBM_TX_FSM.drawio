@@ -95,8 +95,8 @@
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <Array as="points">
               <mxPoint x="1020" y="1390" />
-              <mxPoint x="770" y="1390" />
-              <mxPoint x="770" y="467" />
+              <mxPoint x="750" y="1390" />
+              <mxPoint x="750" y="467" />
             </Array>
             <mxPoint x="909.95" y="1052.5" as="sourcePoint" />
             <mxPoint x="850" y="465" as="targetPoint" />
@@ -182,9 +182,9 @@
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-38" edge="1" parent="1" source="Ly1VW1kiYANL2SHkxWqd-47" style="endArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="Ly1VW1kiYANL2SHkxWqd-3" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <Array as="points">
-              <mxPoint x="920" y="1188" />
-              <mxPoint x="850" y="1188" />
-              <mxPoint x="850" y="930" />
+              <mxPoint x="920" y="1187" />
+              <mxPoint x="810" y="1188" />
+              <mxPoint x="810" y="930" />
             </Array>
             <mxPoint x="920" y="1150" as="sourcePoint" />
             <mxPoint x="800" y="810" as="targetPoint" />
