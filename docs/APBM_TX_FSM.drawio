@@ -68,7 +68,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-15" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="WAIT_RX_FIFO_SPACE:&lt;div&gt;rx_fifo_wr = 0&lt;/div&gt;&lt;div&gt;rx_fifo_rd = 0&lt;br&gt;&lt;/div&gt;&lt;div&gt;penable = 0, psel = 0&lt;/div&gt;&lt;div&gt;prdata_pipe = prdata&lt;/div&gt;" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-15" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="WAIT_TX_FIFO_DATA:&lt;div&gt;tx_fifo_wr = 0&lt;/div&gt;&lt;div&gt;tx_fifo_rd = 0&lt;br&gt;&lt;/div&gt;&lt;div&gt;penable = 0, psel = 0&lt;/div&gt;&lt;div&gt;pwdata_pipe = pwdata&lt;/div&gt;" vertex="1">
           <mxGeometry height="85" width="250" x="480" y="975" as="geometry" />
         </mxCell>
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="RX_ACK" vertex="1">
