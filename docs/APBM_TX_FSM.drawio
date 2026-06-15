@@ -54,7 +54,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="WAIT_RX_FIFO_SPACE" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="CHECK_TX_FIFO_EMPT" vertex="1">
           <mxGeometry height="55" width="140" x="950" y="990" as="geometry" />
         </mxCell>
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-13" edge="1" parent="1" source="Ly1VW1kiYANL2SHkxWqd-7" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="Ly1VW1kiYANL2SHkxWqd-12" value="">
@@ -154,7 +154,7 @@
             <mxPoint x="958" y="992.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-32" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-31" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="rx_fifo_full = 1" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-32" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-31" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="tx_fifo_empty = 1" vertex="1">
           <mxGeometry relative="1" x="-0.1215" y="-8" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
