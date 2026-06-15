@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="fH5n9Me7nUtPE_JYtTzi">
-    <mxGraphModel dx="673" dy="380" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="534" dy="301" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -121,7 +121,7 @@
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="APB_SINGLE_WRITE_SETUP" vertex="1">
           <mxGeometry height="55" width="180" x="1170" y="570" as="geometry" />
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-26" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="APB_SINGLE_WRITE_SETUP:&lt;div&gt;target_cnt = 1&lt;br&gt;cnt = 0, service_type = single&lt;/div&gt;&lt;div&gt;psel=1, penable=0&lt;br&gt;pwrite=1, paddr=I2S_TXFIFO_REG&lt;/div&gt;" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-26" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="APB_SINGLE_WRITE_SETUP:&lt;div&gt;target_cnt = 1&lt;br&gt;cnt = 0, service_type = single&lt;/div&gt;" vertex="1">
           <mxGeometry height="120" width="250" x="1400" y="557.5" as="geometry" />
         </mxCell>
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-27" edge="1" parent="1" source="Ly1VW1kiYANL2SHkxWqd-25" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;" value="">
