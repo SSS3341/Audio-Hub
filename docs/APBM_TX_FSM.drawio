@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="fH5n9Me7nUtPE_JYtTzi">
-    <mxGraphModel dx="673" dy="380" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="815" dy="460" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -36,7 +36,7 @@
             <mxPoint x="1080" y="780" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-9" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="APB_READ_ACCESS:&lt;br&gt;penable=1" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-9" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="APB_WRITE_ACCESS:&lt;br&gt;penable=1" vertex="1">
           <mxGeometry height="70" width="250" x="470" y="840" as="geometry" />
         </mxCell>
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-10" edge="1" parent="1" source="Ly1VW1kiYANL2SHkxWqd-7" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0.015;exitY=0.881;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;exitPerimeter=0;" value="">
