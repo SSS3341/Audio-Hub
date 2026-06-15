@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="fH5n9Me7nUtPE_JYtTzi">
-    <mxGraphModel dx="815" dy="460" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="673" dy="380" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -19,7 +19,7 @@
             <mxPoint x="1020" y="570" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-5" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-4" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="dma_rx_req = 1 &amp;amp;&amp;amp; fifo_free &amp;gt;= rx_msize" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-5" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-4" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="dma_tx_req = 1 &amp;amp;&amp;amp; tx_fifo_level &amp;gt;= tx_msize" vertex="1">
           <mxGeometry relative="1" x="-0.0927" y="-2" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
