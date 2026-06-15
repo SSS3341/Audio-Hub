@@ -113,7 +113,7 @@
             <mxPoint x="1260" y="560" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-24" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-23" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="dma_rx_single = 1 &amp;amp;&amp;amp;&amp;nbsp; fifo_free_level &amp;gt;= 1" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-24" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-23" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="dma_rx_single = 1 &amp;amp;&amp;amp;&amp;nbsp; tx_fifo_level &amp;gt;= 1" vertex="1">
           <mxGeometry relative="1" x="-0.0927" y="-2" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
