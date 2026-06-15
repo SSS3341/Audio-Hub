@@ -133,11 +133,6 @@
             <mxPoint x="1040" y="787.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-30" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-29" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="tx_fifo_empty = 0" vertex="1">
-          <mxGeometry relative="1" x="-0.1138" y="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-33" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="TX_FIFO_POP:&lt;div&gt;tx_fifo_rd = 1&lt;br&gt;&lt;div&gt;&amp;nbsp;pwdata_pipe = tx_data_rd&lt;/div&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="85" width="250" x="480" y="777.5" as="geometry" />
         </mxCell>
