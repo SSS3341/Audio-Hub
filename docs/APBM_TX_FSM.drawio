@@ -1,10 +1,10 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="fH5n9Me7nUtPE_JYtTzi">
-    <mxGraphModel dx="2580" dy="1457" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="737" dy="416" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;" value="APBM TX Requst FSM&amp;nbsp;&amp;nbsp;" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;" value="APBM TX Fill FSM&amp;nbsp;&amp;nbsp;" vertex="1">
           <mxGeometry height="40" width="760" x="810" y="130" as="geometry" />
         </mxCell>
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="TX_REQ_IDLE" vertex="1">
@@ -219,7 +219,7 @@
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-48" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="TX_CNT_UPDATE：&lt;div&gt;tx_trans_cnt = cnt +1&lt;/div&gt;" vertex="1">
           <mxGeometry height="70" width="250" x="470" y="1140" as="geometry" />
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-49" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;" value="APBM TX FIFO Stream FSM&amp;nbsp;&amp;nbsp;" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-49" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;" value="APBM TX FIFO Fill FSM&amp;nbsp;&amp;nbsp;" vertex="1">
           <mxGeometry height="40" width="760" x="2150" y="150" as="geometry" />
         </mxCell>
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-50" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="TX_STREAM_IDLE" vertex="1">
