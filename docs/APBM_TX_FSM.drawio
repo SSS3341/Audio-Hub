@@ -112,7 +112,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="APB_SINGLE_WRITE_SETUP" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="TX_SINGLE_INIT" vertex="1">
           <mxGeometry height="55" width="180" x="1170" y="570" as="geometry" />
         </mxCell>
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-26" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="APB_SINGLE_WRITE_SETUP:&lt;div&gt;target_cnt = 1&lt;br&gt;cnt = 0, service_type = single&lt;/div&gt;" vertex="1">
