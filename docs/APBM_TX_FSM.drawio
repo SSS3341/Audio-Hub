@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="fH5n9Me7nUtPE_JYtTzi">
-    <mxGraphModel dx="2211" dy="1249" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="704" dy="397" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -218,6 +218,96 @@
         </mxCell>
         <mxCell id="Ly1VW1kiYANL2SHkxWqd-48" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="TX_CNT_UPDATE：&lt;div&gt;tx_trans_cnt = cnt +1&lt;/div&gt;" vertex="1">
           <mxGeometry height="70" width="250" x="470" y="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-49" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;" value="APBM TX FIFO Stream FSM&amp;nbsp;&amp;nbsp;" vertex="1">
+          <mxGeometry height="40" width="760" x="2150" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-50" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="TX_STREAM_IDLE" vertex="1">
+          <mxGeometry height="55" width="120" x="2300" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-51" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="Drive Stream" vertex="1">
+          <mxGeometry height="55" width="180" x="2270" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-52" edge="1" parent="1" source="Ly1VW1kiYANL2SHkxWqd-50" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="Ly1VW1kiYANL2SHkxWqd-51" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="2380" y="410" as="sourcePoint" />
+            <mxPoint x="2430" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-53" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-52" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="!rx_fifo_has_empty" vertex="1">
+          <mxGeometry relative="1" x="-0.0927" y="-2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-54" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Drive Stream:&lt;div&gt;rx_fifo_rd_data_pipe = rx_fifo_rd_data&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="250" x="1920" y="407.5" as="geometry" />
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-55" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="POP_RX_FIFO" vertex="1">
+          <mxGeometry height="55" width="130" x="2295" y="577.5" as="geometry" />
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-56" edge="1" parent="1" source="Ly1VW1kiYANL2SHkxWqd-51" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="Ly1VW1kiYANL2SHkxWqd-55" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="2370" y="560" as="sourcePoint" />
+            <mxPoint x="2420" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-57" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-56" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="rx_ready = 1" vertex="1">
+          <mxGeometry relative="1" x="-0.0537" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-58" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="POP_RX_FIFO:&lt;div&gt;rx_valid = 1&lt;/div&gt;&lt;div&gt;rx_data = fifo_rd_data_pipe&lt;/div&gt;" vertex="1">
+          <mxGeometry height="70" width="250" x="1920" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-59" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="TX_STREAM_IDLE:&lt;div&gt;rx_valid=0, rx_data=0&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="250" x="1920" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-60" edge="1" parent="1" source="Ly1VW1kiYANL2SHkxWqd-55" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" target="Ly1VW1kiYANL2SHkxWqd-51" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="2360" y="670" />
+              <mxPoint x="2250" y="670" />
+              <mxPoint x="2250" y="468" />
+            </Array>
+            <mxPoint x="2550" y="570" as="sourcePoint" />
+            <mxPoint x="2600" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-61" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-60" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="rx_fifo_level &amp;gt; 1" vertex="1">
+          <mxGeometry relative="1" x="-0.9016" y="-1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-62" edge="1" parent="1" source="Ly1VW1kiYANL2SHkxWqd-55" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" target="Ly1VW1kiYANL2SHkxWqd-50" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="2570" y="605" />
+              <mxPoint x="2570" y="318" />
+            </Array>
+            <mxPoint x="2510" y="600" as="sourcePoint" />
+            <mxPoint x="2560" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-63" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-62" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="rx_fifo_level = 0" vertex="1">
+          <mxGeometry relative="1" x="0.0267" y="-1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-64" edge="1" parent="1" source="Ly1VW1kiYANL2SHkxWqd-51" style="curved=1;endArrow=classic;html=1;rounded=0;entryX=0.991;entryY=0.112;entryDx=0;entryDy=0;exitX=1.005;exitY=0.854;exitDx=0;exitDy=0;exitPerimeter=0;entryPerimeter=0;" target="Ly1VW1kiYANL2SHkxWqd-51" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="2490" y="500" />
+              <mxPoint x="2510" y="490" />
+              <mxPoint x="2510" y="440" />
+            </Array>
+            <mxPoint x="2460" y="560" as="sourcePoint" />
+            <mxPoint x="2510" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-65" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-64" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="rx_ready = 0" vertex="1">
+          <mxGeometry relative="1" x="-0.1698" y="2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
