@@ -307,7 +307,7 @@
             <mxPoint x="958" y="720" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ly1VW1kiYANL2SHkxWqd-71" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-70" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="tx_fifo" vertex="1">
+        <mxCell id="Ly1VW1kiYANL2SHkxWqd-71" connectable="0" parent="Ly1VW1kiYANL2SHkxWqd-70" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="tx_fifo_empty = 1" vertex="1">
           <mxGeometry relative="1" x="-0.1215" y="-8" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
