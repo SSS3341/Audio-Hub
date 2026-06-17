@@ -266,7 +266,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-96" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="APBM_IDLE:&lt;div&gt;dma_rx_ack=0&lt;/div&gt;&lt;div&gt;psel=0, penable= 0,&lt;br&gt;&lt;/div&gt;&lt;div&gt;rx_fifo_level = 0, rx_fifo_full = 0, rx_fifo_has_empty = 1&lt;/div&gt;" vertex="1">
+        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-96" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="DG_IDLE:&lt;div&gt;dma_rx_req =0,&lt;/div&gt;&lt;div&gt;dma_rx_single = 0,&lt;/div&gt;&lt;div&gt;prdata = 1, slverr = 0, pready = 0&lt;/div&gt;" vertex="1">
           <mxGeometry height="120" width="250" x="2810" y="180" as="geometry" />
         </mxCell>
         <mxCell id="M1j7goV4bkzS5Lg1R7Bt-97" edge="1" parent="1" source="M1j7goV4bkzS5Lg1R7Bt-87" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="M1j7goV4bkzS5Lg1R7Bt-62" value="">
