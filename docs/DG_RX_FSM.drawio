@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="1fRNLwPgRf_CtldP1hrz">
-    <mxGraphModel dx="-1120" dy="301" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="-743" dy="514" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -107,11 +107,6 @@
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <mxPoint x="3380" y="520" as="sourcePoint" />
             <mxPoint x="3360" y="530" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-64" connectable="0" parent="M1j7goV4bkzS5Lg1R7Bt-63" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="dma_rx_req = 1 &amp;amp;&amp;amp; fifo_free &amp;gt;= rx_msize" vertex="1">
-          <mxGeometry relative="1" x="-0.0927" y="-2" as="geometry">
-            <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="M1j7goV4bkzS5Lg1R7Bt-65" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="APB_READ_SETUP:&lt;div&gt;psel=1, penable=0&lt;br&gt;pwrite=0, paddr=I2S_RXFIFO_REG&lt;/div&gt;" vertex="1">
@@ -284,7 +279,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-99" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="RX_MULTI_INIT" vertex="1">
+        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-99" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="DIGITAL GAIN" vertex="1">
           <mxGeometry height="55" width="180" x="3270" y="530" as="geometry" />
         </mxCell>
         <mxCell id="M1j7goV4bkzS5Lg1R7Bt-100" edge="1" parent="1" source="M1j7goV4bkzS5Lg1R7Bt-99" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="M1j7goV4bkzS5Lg1R7Bt-62" value="">
