@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="1fRNLwPgRf_CtldP1hrz">
-    <mxGraphModel dx="-548" dy="624" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="-686" dy="546" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -94,7 +94,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-60" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;" value="DG function FSM&amp;nbsp;&amp;nbsp;" vertex="1">
+        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-60" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;" value="DG Function FSM&amp;nbsp;&amp;nbsp;" vertex="1">
           <mxGeometry height="40" width="760" x="3260" y="120" as="geometry" />
         </mxCell>
       </root>
