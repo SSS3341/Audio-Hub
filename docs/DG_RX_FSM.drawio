@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="1fRNLwPgRf_CtldP1hrz">
-    <mxGraphModel dx="-794" dy="486" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="-981" dy="380" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -44,7 +44,7 @@
         <mxCell id="M1j7goV4bkzS5Lg1R7Bt-37" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="POP_RX_FIFO:&lt;div&gt;rx_valid = 1&lt;/div&gt;&lt;div&gt;rx_data = fifo_rd_data_pipe&lt;/div&gt;" vertex="1">
           <mxGeometry height="70" width="250" x="1810" y="550" as="geometry" />
         </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-38" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="RX_STREAM_IDLE:&lt;div&gt;rx_valid=0, rx_data=0&lt;/div&gt;" vertex="1">
+        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-38" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="RX_STREAM_IDLE:&lt;div&gt;rx_ready =0&lt;/div&gt;" vertex="1">
           <mxGeometry height="120" width="250" x="1810" y="220" as="geometry" />
         </mxCell>
         <mxCell id="M1j7goV4bkzS5Lg1R7Bt-39" edge="1" parent="1" source="M1j7goV4bkzS5Lg1R7Bt-34" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" target="M1j7goV4bkzS5Lg1R7Bt-30" value="">
