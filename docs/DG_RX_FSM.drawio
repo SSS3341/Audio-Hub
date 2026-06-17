@@ -58,7 +58,7 @@
             <mxPoint x="2490" y="500" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-40" connectable="0" parent="M1j7goV4bkzS5Lg1R7Bt-39" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="rx_fifo_level &amp;gt; 1" vertex="1">
+        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-40" connectable="0" parent="M1j7goV4bkzS5Lg1R7Bt-39" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="rx_fifo_free &amp;gt; 1" vertex="1">
           <mxGeometry relative="1" x="-0.9016" y="-1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
@@ -73,7 +73,7 @@
             <mxPoint x="2450" y="530" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-42" connectable="0" parent="M1j7goV4bkzS5Lg1R7Bt-41" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="rx_fifo_level = 0" vertex="1">
+        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-42" connectable="0" parent="M1j7goV4bkzS5Lg1R7Bt-41" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="rx_fifo_full = 1" vertex="1">
           <mxGeometry relative="1" x="0.0267" y="-1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
