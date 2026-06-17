@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="1fRNLwPgRf_CtldP1hrz">
-    <mxGraphModel dx="-743" dy="514" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="-548" dy="624" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -192,29 +192,6 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-82" edge="1" parent="1" source="M1j7goV4bkzS5Lg1R7Bt-61" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="M1j7goV4bkzS5Lg1R7Bt-84" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="3590" y="500" as="sourcePoint" />
-            <mxPoint x="3600" y="520" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-83" connectable="0" parent="M1j7goV4bkzS5Lg1R7Bt-82" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="dma_rx_single = 1 &amp;amp;&amp;amp;&amp;nbsp; fifo_free_level &amp;gt;= 1" vertex="1">
-          <mxGeometry relative="1" x="-0.0927" y="-2" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-84" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="RX_SINGLE_READ_INIT" vertex="1">
-          <mxGeometry height="55" width="180" x="3520" y="530" as="geometry" />
-        </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-85" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="RX_SINGLE_READ_INIT:&lt;div&gt;target_cnt = 1&lt;br&gt;cnt = 0, service_type = single&lt;/div&gt;" vertex="1">
-          <mxGeometry height="120" width="250" x="3730" y="497.5" as="geometry" />
-        </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-86" edge="1" parent="1" source="M1j7goV4bkzS5Lg1R7Bt-84" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" target="M1j7goV4bkzS5Lg1R7Bt-62" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="3570" y="910" as="sourcePoint" />
-            <mxPoint x="3620" y="860" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="M1j7goV4bkzS5Lg1R7Bt-87" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="RX_FIFO_PUSH" vertex="1">
           <mxGeometry height="55" width="120" x="3300" y="1080" as="geometry" />
         </mxCell>
@@ -288,7 +265,7 @@
             <mxPoint x="3350" y="665" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-101" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="RX_MULTI_INIT:&lt;div&gt;target_cnt = rx_msize&lt;br&gt;cnt = 0, serveice_type = mult&lt;/div&gt;" vertex="1">
+        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-101" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="DIGITAL GAIN:&lt;div&gt;gianed_rx_data = gain_para*rx_fifo_rdata_buffer&lt;/div&gt;" vertex="1">
           <mxGeometry height="120" width="250" x="2820" y="497.5" as="geometry" />
         </mxCell>
       </root>
