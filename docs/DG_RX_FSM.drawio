@@ -27,7 +27,7 @@
         <mxCell id="M1j7goV4bkzS5Lg1R7Bt-33" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="RX_FIFO_REQ:&lt;div&gt;r&lt;span style=&quot;background-color: transparent;&quot;&gt;x_ready = 1&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;rx_data_pipe = rx_data&lt;/span&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="120" width="250" x="1810" y="387.5" as="geometry" />
         </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-34" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="RX_FIFO_LOAD" vertex="1">
+        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-34" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#ffffff;strokeColor=#000000;" value="POP_RX_FIFO" vertex="1">
           <mxGeometry height="55" width="130" x="2185" y="557.5" as="geometry" />
         </mxCell>
         <mxCell id="M1j7goV4bkzS5Lg1R7Bt-35" edge="1" parent="1" source="M1j7goV4bkzS5Lg1R7Bt-30" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="M1j7goV4bkzS5Lg1R7Bt-34" value="">
@@ -41,7 +41,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-37" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="RX_FIFO_LOAD:&lt;div&gt;rx_fifo_wr = 1&lt;/div&gt;&lt;div&gt;rx_fifo_wdata = rx_data_pipe&lt;/div&gt;" vertex="1">
+        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-37" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="POP_RX_FIFO:&lt;div&gt;rx_fifo_wr = 1&lt;/div&gt;&lt;div&gt;rx_fifo_wdata = rx_data_pipe&lt;/div&gt;" vertex="1">
           <mxGeometry height="70" width="250" x="1810" y="550" as="geometry" />
         </mxCell>
         <mxCell id="M1j7goV4bkzS5Lg1R7Bt-38" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="RX_STREAM_IDLE:&lt;div&gt;rx_ready =0&lt;/div&gt;" vertex="1">
