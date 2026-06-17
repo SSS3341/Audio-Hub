@@ -89,7 +89,7 @@
             <mxPoint x="2400" y="490" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-56" connectable="0" parent="M1j7goV4bkzS5Lg1R7Bt-55" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="rx_ready = 0" vertex="1">
+        <mxCell id="M1j7goV4bkzS5Lg1R7Bt-56" connectable="0" parent="M1j7goV4bkzS5Lg1R7Bt-55" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="rx_valid = 0" vertex="1">
           <mxGeometry relative="1" x="-0.1698" y="2" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
