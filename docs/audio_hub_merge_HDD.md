@@ -32,7 +32,7 @@ Merged output:
 A0, B0, C0, D0, A1, B1, C1, D1, A2, B2, C2, D2, A3, B3, C3, D3 ...
 ```
 
-The output channel/slot is inferred by a handshake-driven slot counter. The slot counter increments only when `tx_valid && tx_ready`.
+The slot index of output channel is inferred by a handshake-driven slot counter. The slot counter increments only when `tx_valid && tx_ready`.
 
 The IP does not append `slot_id`, `slot_valid`, or frame metadata to the stream.
 
