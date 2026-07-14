@@ -2,26 +2,15 @@
 
 **Document version:** v1.0  
 **Module name:** `audio_channel_merge`  
-**Subsystem:** Audio Hub  
-**Data interface:** `valid / ready / data[31:0]`  
-**Architecture basis:** Per-channel receive FSM, per-channel FIFO bank, merge scheduler, and single 32-bit output stream
-
 ---
 
 ## 1. Overview
 
-The Channel Merge IP combines multiple independent mono audio streams into one time-interleaved multi-channel stream.
+The Channel Merge IP combines multiple independent audio streams into one-channel time-interleaved stream.
 
-Each input channel is carried on an independent `valid/ready/data` interface. The input port number identifies the source channel. The output remains 32 bits wide and carries one sample per successful transfer. Output slot identity is therefore represented implicitly by the transfer order.
+Each input channel is carried on an independent `valid/ready/data` interface. The input port number identifies the source channel. The output remains 32 bits wide and carries one sample per successful transfer(i.e per valid/ready handshake). Output slot identity is therefore represented implicitly by the transfer order.
 
-For `N` enabled channels, the output order is:
-
-```text
-slot0_sample[0], slot1_sample[0], ... slotN-1_sample[0],
-slot0_sample[1], slot1_sample[1], ...
-```
-
-For two channels:
+For example, for two channels:
 
 ```text
 Input channel 0: A0, A1, A2, A3, ...
@@ -29,6 +18,18 @@ Input channel 1: B0, B1, B2, B3, ...
 
 Merged output:
 A0, B0, A1, B1, A2, B2, A3, B3, ...
+```
+
+For four input channels:
+
+```text
+Input channel 0: A0, A1, A2, A3, ...
+Input channel 1: B0, B1, B2, B3, ...
+Input channel 2: C0, C1, C2, C3, ...
+Input channel 3: D0, D1, D2, D3, ...
+
+Merged output:
+A0, B0, C0, D0, A1, B1, C1, D1, A2, B2, C2, D2, A3, B3, C3, D3 ...
 ```
 
 The output channel/slot is inferred by a handshake-driven slot counter. The slot counter increments only when `tx_valid && tx_ready`.
