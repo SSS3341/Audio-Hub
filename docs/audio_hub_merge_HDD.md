@@ -34,26 +34,24 @@ A0, B0, C0, D0, A1, B1, C1, D1, A2, B2, C2, D2, A3, B3, C3, D3 ...
 
 The slot index of output channel is inferred by a handshake-driven slot counter. The slot counter increments only when `tx_valid && tx_ready`.
 
-The IP does not append `slot_id`, `slot_valid`, or frame metadata to the stream.
-
 ---
 
-## 2. Design objectives
+## 2. Design Features
 
-The merge IP shall:
 
-1. Accept multiple independent 32-bit mono input streams.
-2. Buffer each input channel independently.
-3. Preserve per-channel sample ordering.
-4. Emit samples in a fixed, configurable slot sequence.
-5. Maintain slot ordering under downstream backpressure.
-6. Support expansion from two channels to more channels through parameters.
-7. Support routing of the merged stream back to the Audio Hub crossbar.
-8. Support routing of the merged stream toward a regbank/PIO or DMA adapter path.
-9. Support chaining with Digital Gain and other processing IPs through the crossbar.
-10. Avoid a combinational ready path from output to all input interfaces.
-11. Detect configuration errors, FIFO overflow, starvation, and prolonged alignment wait.
-12. Support safe flush, disable, and reconfiguration.
+| ID | Feature |
+|1. Accept multiple independent 32-bit mono input streams.
+|2. Buffer each input channel independently.
+|3. Preserve per-channel sample ordering.
+|4. Emit samples in a fixed, configurable slot sequence.
+|5. Maintain slot ordering under downstream backpressure.
+|6. Support expansion from two channels to more channels through parameters.
+|7. Support routing of the merged stream back to the Audio Hub crossbar.
+|8. Support routing of the merged stream toward a regbank/PIO or DMA adapter path.
+|9. Support chaining with Digital Gain and other processing IPs through the crossbar.
+|10. Avoid a combinational ready path from output to all input interfaces.
+|11. Detect configuration errors, FIFO overflow, starvation, and prolonged alignment wait.
+|12. Support safe flush, disable, and reconfiguration.
 
 The merge IP shall not:
 
@@ -896,3 +894,5 @@ Configuration update only while idle
 - Crossbar route changes and merge configuration changes require idle/flush handling.
 - Synopsys DMA handshake generation belongs in a standalone DMA adapter.
 - The architecture scales through parameterized input count, FIFO depth, slot mapping, and counters.
+
+  The IP does not append `slot_id`, `slot_valid`, or frame metadata to the stream.
