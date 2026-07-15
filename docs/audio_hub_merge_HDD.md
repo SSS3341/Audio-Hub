@@ -272,7 +272,37 @@ Frame 1                                                           Frame 2
       +---------------- Crossbar sources ---------------------+
 
 
-
+                         +---------+
+                         |  IDLE   |
+                         +----+----+
+                              |
+                              | Merge Enable
+                              v
+                     +--------+---------+
+                     |                  |
+                     |   WAIT_FRAME     |
+                     |                  |
+                     | All required     |
+                     | RX FIFOs ready ? |
+                     +--------+---------+
+                              |
+                              | Yes
+                              v
+                     +--------+---------+
+                     |                  |
+                     |  WRITE_FRAME     |
+                     |                  |
+                     | Write one slot   |
+                     | into TX FIFO     |
+                     +--------+---------+
+                              |
+                  Last slot ? |
+                     No       | Yes
+                      |       |
+                      +-------+
+                              |
+                              v
+                        WAIT_FRAME
 
 # 8. Future Design Discussion 
 The IP does not append `slot_id`, `slot_valid`, or frame metadata to the stream.
