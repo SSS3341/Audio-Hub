@@ -105,16 +105,23 @@ rx_ready[N-1:0] <-----------|                      |
                 empty[N-1:0]         |
                 word_cnt[N-1:0]      |
                                      v
-                            +----------------------+
-                            |     Merge Logic      |
-                            |  Slot Scheduler/FSM  |
-                            +----------+-----------+
-                                       |
-                                       v
-                            +----------------------+
-                            |        TX_FIFO       |
-                            |     TX_FIFO_POP FSM  |
-                            +----------+-----------+
+      +------------------+------------------+------------------+
+      |                  |                  |                  |
+      v                  v                  v                  v
++-----------+      +-----------+      +-----------+      +-----------+
+| TX0 Merge |      | TX1 Merge |      | TX2 Merge |      | TX3 Merge |
+| Scheduler |      | Scheduler |      | Scheduler |      | Scheduler |
++-----+-----+      +-----+-----+      +-----+-----+      +-----+-----+
+      |                  |                  |                  |
+      v                  v                  v                  v
++-----------+      +-----------+      +-----------+      +-----------+
+| TX FIFO 0 |      | TX FIFO 1 |      | TX FIFO 2 |      | TX FIFO 3 |
++-----+-----+      +-----+-----+      +-----+-----+      +-----+-----+
+      |                  |                  |                  |
+ valid/ready/data   valid/ready/data   valid/ready/data   valid/ready/data
+      |                  |                  |                  |
+      +---------------- Crossbar sources ---------------------+
+
                                        |
                               tx_valid/ready/data
                                        |
@@ -247,31 +254,8 @@ Frame 1                                                           Frame 2
 
 ## 7. FSM Design
 
-8路 RX Stream
-      |
-      v
-+----------------------+
-| 8 × RX FIFO          |
-+----------------------+
-      |
-      +------------------+------------------+------------------+
-      |                  |                  |                  |
-      v                  v                  v                  v
-+-----------+      +-----------+      +-----------+      +-----------+
-| TX0 Merge |      | TX1 Merge |      | TX2 Merge |      | TX3 Merge |
-| Scheduler |      | Scheduler |      | Scheduler |      | Scheduler |
-+-----+-----+      +-----+-----+      +-----+-----+      +-----+-----+
-      |                  |                  |                  |
-      v                  v                  v                  v
-+-----------+      +-----------+      +-----------+      +-----------+
-| TX FIFO 0 |      | TX FIFO 1 |      | TX FIFO 2 |      | TX FIFO 3 |
-+-----+-----+      +-----+-----+      +-----+-----+      +-----+-----+
-      |                  |                  |                  |
- valid/ready/data   valid/ready/data   valid/ready/data   valid/ready/data
-      |                  |                  |                  |
-      +---------------- Crossbar sources ---------------------+
 
-
+```text
                          +---------+
                          |  IDLE   |
                          +----+----+
@@ -303,6 +287,7 @@ Frame 1                                                           Frame 2
                               |
                               v
                         WAIT_FRAME
+```
 
 # 8. Future Design Discussion 
 The IP does not append `slot_id`, `slot_valid`, or frame metadata to the stream.
