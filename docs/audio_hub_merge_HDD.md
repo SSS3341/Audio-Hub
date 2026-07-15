@@ -244,6 +244,14 @@ Frame 1                                                           Frame 2
 | `cfg_tx_3_slot_6` | 3 | Select which input channel data will be put in slot_6 of each frame |
 | `cfg_tx_3_slot_7` | 3 | Select which input channel data will be put in slot_7 of each frame |
 
+### 6.2 TX Channel Frame Setting Register
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_0_frame_num` | 3 | Select tx channel 0 merged rx frame number |
+| `cfg_tx_1_frame_num` | 3 | Select tx channel 1 merged rx frame number |
+| `cfg_tx_2_frame_num` | 3 | Select tx channel 2 merged rx frame number |
+| `cfg_tx_3_frame_num` | 3 | Select tx channel 3 merged rx frame number |
+
 ### 6.6 RX FIFO Flush Register 
 | Sigal | Width | Description |
 |---|---:|---|
@@ -260,14 +268,14 @@ Frame 1                                                           Frame 2
                          |  IDLE   |
                          +----+----+
                               |
-                              | Merge Enable
+                              | Merge Enable && TX channel enable
                               v
                      +--------+---------+
                      |                  |
                      |   WAIT_FRAME     |
                      |                  |
-                     | All required     |
-                     | RX FIFOs ready ? |
+                     | TX slot_0 from   |
+                     | RX FIFO ready ?  |
                      +--------+---------+
                               |
                               | Yes
