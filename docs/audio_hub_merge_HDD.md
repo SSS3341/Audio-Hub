@@ -247,6 +247,31 @@ Frame 1                                                           Frame 2
 
 ## 7. FSM Design
 
+8路 RX Stream
+      |
+      v
++----------------------+
+| 8 × RX FIFO          |
++----------------------+
+      |
+      +------------------+------------------+------------------+
+      |                  |                  |                  |
+      v                  v                  v                  v
++-----------+      +-----------+      +-----------+      +-----------+
+| TX0 Merge |      | TX1 Merge |      | TX2 Merge |      | TX3 Merge |
+| Scheduler |      | Scheduler |      | Scheduler |      | Scheduler |
++-----+-----+      +-----+-----+      +-----+-----+      +-----+-----+
+      |                  |                  |                  |
+      v                  v                  v                  v
++-----------+      +-----------+      +-----------+      +-----------+
+| TX FIFO 0 |      | TX FIFO 1 |      | TX FIFO 2 |      | TX FIFO 3 |
++-----+-----+      +-----+-----+      +-----+-----+      +-----+-----+
+      |                  |                  |                  |
+ valid/ready/data   valid/ready/data   valid/ready/data   valid/ready/data
+      |                  |                  |                  |
+      +---------------- Crossbar sources ---------------------+
+
+
 
 
 # 8. Future Design Discussion 
