@@ -244,7 +244,7 @@ Frame 1                                                           Frame 2
 | `cfg_tx_3_slot_6` | 3 | Select which input channel data will be put in slot_6 of each frame |
 | `cfg_tx_3_slot_7` | 3 | Select which input channel data will be put in slot_7 of each frame |
 
-### 6.2 TX Channel Frame Setting Register
+### 6.6 TX Channel Frame Setting Register
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_0_frame_num` | 3 | Select tx channel 0 merged rx frame number |
@@ -252,7 +252,15 @@ Frame 1                                                           Frame 2
 | `cfg_tx_2_frame_num` | 3 | Select tx channel 2 merged rx frame number |
 | `cfg_tx_3_frame_num` | 3 | Select tx channel 3 merged rx frame number |
 
-### 6.6 RX FIFO Flush Register 
+### 6.7 Tx Channel Slot Setting Register
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_0_slot_size` | 3 | Select tx channel 0 slot size: 0 8bits, 1 16bits, 2 24bits, 3 32bits |
+| `cfg_tx_1_slot_size` | 3 | Select tx channel 1 slot size: 0 8bits, 1 16bits, 2 24bits, 3 32bits |
+| `cfg_tx_2_slot_size` | 3 | Select tx channel 2 slot size: 0 8bits, 1 16bits, 2 24bits, 3 32bits |
+| `cfg_tx_3_slot_size` | 3 | Select tx channel 3 slot size: 0 8bits, 1 16bits, 2 24bits, 3 32bits |
+
+### 6.8 RX FIFO Flush Register 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_rx_fifo_flush` | 8 | Each bit provides rx flush signal of each rx channel respectively |
