@@ -1,38 +1,38 @@
 # Audio Hub Channel Merge IP Hardware Design Description
 
-**Document version:** v1.0  
+**Document version:** v2.0  
 **Module name:** `audio_channel_merge`  
 ---
 
 ## 1. Overview
 
-The Channel Merge IP supports merge 8 multiple independent input rx audio streams into 4 channel output streams, each output stream can be merged of any combination of the 8 intput streams. Software needs to config corresponding registers to choose the merge style of each output tx channel.
+The Channel Merge IP supports merge up to 16 independent input rx audio streams into 4 output streams, each output stream can be merged of any combination of the 16 intput streams. Software needs to config corresponding registers to choose the merge style of each output tx channel.
 
 Each input channel is carried on an independent `valid/ready/data` interface. The input port number identifies the source channel. The output remains 32 bits wide and carries one sample per successful transfer(i.e per valid/ready handshake). Output slot identity is therefore represented implicitly by the transfer order.
 
-For example, for two channels:
+For example, for two input streams:
 
 ```text
-Input channel 0: A0, A1, A2, A3, ...
-Input channel 1: B0, B1, B2, B3, ...
+Input stream 0: A0, A1, A2, A3, ...
+Input stream 1: B0, B1, B2, B3, ...
 
-Merged output:
+Merged output stream:
 A0, B0, A1, B1, A2, B2, A3, B3, ...
 ```
 
-For four input channels:
+For four input streams:
 
 ```text
-Input channel 0: A0, A1, A2, A3, ...
-Input channel 1: B0, B1, B2, B3, ...
-Input channel 2: C0, C1, C2, C3, ...
-Input channel 3: D0, D1, D2, D3, ...
+Input stream 0: A0, A1, A2, A3, ...
+Input stream 1: B0, B1, B2, B3, ...
+Input stream 2: C0, C1, C2, C3, ...
+Input stream 3: D0, D1, D2, D3, ...
 
-Merged output:
+Merged output stream:
 A0, B0, C0, D0, A1, B1, C1, D1, A2, B2, C2, D2, A3, B3, C3, D3 ...
 ```
 
-The slot index of output channel is inferred by a handshake-driven slot counter. The slot counter increments only when `tx_valid && tx_ready`.
+The slot index of output stream is inferred by a handshake-driven slot counter. The slot counter increments only when `tx_valid && tx_ready`.
 
 ---
 
@@ -41,17 +41,19 @@ The slot index of output channel is inferred by a handshake-driven slot counter.
 
 | ID | Feature |
 |----|---------|
-| 1 | Support 8 independent 32-bit input streams |
-| 2 | Each input channel has independently rx FIFO |
+| 1 | Support 16 independent 32-bit input streams |
+| 2 | Each input channel has independent rx FIFO |
 | 3 | Preserve per-channel sample ordering |
 | 4 | Emit samples in a fixed, configurable slot sequence |
 | 5 | Maintain slot ordering under downstream backpressure |
-| 6 | Support expansion from two channels inputs to 8 channels inputs through parameters |
+| 6 | Support merge operation from two channels inputs to 16 channels inputs through reg config |
 | 7 | Support routing of the merged stream back to the Audio Hub crossbar |
-| 8 | Support tx FIFO to store merged stream data before sending to crossbar |
+| 8 | Support tx FIFO to store merged stream data before sending to crossbar for each output port|
 | 9 | Support chaining with Digital Gain or other processing IPs through the crossbar |
-| 10 | Detect FIFO overflow, underflow, and prolonged alignment wait |
+| 10 | Detect rx/tx FIFO overflow, underflow, and input stream waiting overtime |
 | 11 | Support safe flush, disable, and reconfiguration |
+| 12 | Support software configurable output frame format |
+
 
 ---
 
@@ -61,6 +63,7 @@ The slot index of output channel is inferred by a handshake-driven slot counter.
                            +------------------+
 I2S RX0 ------------------>|                  |
 I2S RX1 ------------------>|     Crossbar     |
+    ... ------------------>|                  |
 I2S RXn ------------------>|                  |
                            +--------+---------+
                                     |
@@ -76,7 +79,7 @@ I2S RXn ------------------>|                  |
                    DG / Mixer / I2S/ DMA adapter stream
 ```
 
-The crossbar treats the merge IP as a multi-port sink on the input side and a single-stream source on the output side. The crossbar shall not modify sample ordering.
+The crossbar treats the merge IP as a multi-port sink on the input side and a multi-port source on the output side. The crossbar shall not modify sample ordering.
 
 ---
 
@@ -137,9 +140,10 @@ rx_ready[N-1:0] <-----------|                      |
 
 ### 5.1 Parameters
 
-parameter DATA_W                = 32;
 parameter RX_FIFO_DEPTH         = 4;
-parameter TX_FIFO_DEPTH         = 32; 
+parameter TX_FIFO_DEPTH         = 64; 
+parameter RX_FIFO_WIDTH         = 32;
+parameter TX_FIFO_WIDTH         = 32; 
 
 ### 5.2 Clock and reset
 
@@ -152,9 +156,9 @@ parameter TX_FIFO_DEPTH         = 32;
 
 | Signal | Direction | Width | Description |
 |---|---:|---:|---|
-| `merge_rx_valid` | Input | `CHANNEL_NUM_MAX` | Per-channel input valid |
-| `merge_rx_ready` | Output | `CHANNEL_NUM_MAX` | Per-channel input ready |
-| `merge_rx_data` | Input | `CHANNEL_NUM_MAX × 32` | Per-channel input sample |
+| `merge_rx_valid` | Input | `16` | Per-channel input valid |
+| `merge_rx_ready` | Output | `16` | Per-channel input ready |
+| `merge_rx_data` | Input | `16 × 32` | Per-channel input sample |
 
 Transfer condition for channel `i`:
 
@@ -168,34 +172,64 @@ The physical input index identifies the channel.
 
 | Signal | Direction | Width | Description |
 |---|---:|---:|---|
-| `merge_tx_valid` | Output | 1 | Merged sample valid |
-| `merge_tx_ready` | Input | 1 | Crossbar accepts output sample |
-| `merge_tx_data` | Output | 32 | Merged sample data |
+| `merge_tx_valid` | Output | 4 | Merged sample valid |
+| `merge_tx_ready` | Input | 4 | Crossbar accepts output sample |
+| `merge_tx_data` | Output | 4 x 32 | Merged sample data |
+
+### 5.5 Interrupt
+| Signal | Direction | Width | Description |
+|---|---:|---:|---|
+| `merge_tx_overflow` | Output | 4 | TX fifo overflow of each output channel, assert if TX FIFO is full but tx_ready of downstream IP is low |
+| `merge_rx_overflow` | Output | 16 | RX fifo overflow of each output channel, assert if RX FIFO is full but there is still valid data coming from upstream IP |
 
 ## 6 Register Description
 
 ### 6.1 Merge Enable Register
 | Sigal | Width | Description |
 |---|---:|---|
-| `cfg_merge_en` | 1 | Enable merge operation |
-| `cfg_merge_rxen` | 8 | Each bit controls the enable signal of each merge recieve channel respectively, for example:
-                        8'b0000_0001 enables channel 1
-                        8'b0000_0100 enables channel 3
-                        8'b0000_0101 enables channel 1 and channel 3 |
-| `cfg_merge_txen` | 1 | Enable merge tx channel |
+| `cfg_merge_en` | 1 | Enable merge IP |
+| `cfg_merge_rxen` | 16 | Each bit controls the enable signal of each merge recieve channel respectively, for example:
+                        16'b0000_0000_0000_0001 enables channel 1
+                        16'b0000_0000_0000_0100 enables channel 3
+                        16'b0000_0000_0000_0101 enables channel 1 and channel 3 |
+| `cfg_merge_txen` | 4 | Each bit enables corresponding output tx channel respectively, for example:
+                        4'b0001 enables channel 1
+                        4'b0100 enables channel 3
+                        4'b0101 enables channel 1 and channel 3 |
 
 ### 6.2 TX Channel 0 Merge Format Register
 | Sigal | Width | Description |
 |---|---:|---|
-| `cfg_tx_0_channel_src_sel` | 8 | Select rx source FIFO for channel 0 output stream |
-| `cfg_tx_0_slot_0` | 3 | Select which input channel data will be put in slot_0 of each frame |
-| `cfg_tx_0_slot_1` | 3 | Select which input channel data will be put in slot_1 of each frame |
-| `cfg_tx_0_slot_2` | 3 | Select which input channel data will be put in slot_2 of each frame |
-| `cfg_tx_0_slot_3` | 3 | Select which input channel data will be put in slot_3 of each frame |
-| `cfg_tx_0_slot_4` | 3 | Select which input channel data will be put in slot_4 of each frame |
-| `cfg_tx_0_slot_5` | 3 | Select which input channel data will be put in slot_5 of each frame |
-| `cfg_tx_0_slot_6` | 3 | Select which input channel data will be put in slot_6 of each frame |
-| `cfg_tx_0_slot_7` | 3 | Select which input channel data will be put in slot_7 of each frame |
+| `cfg_tx_0_channel_src_sel` | 16 | Select rx source FIFO for channel 0 output stream |
+| `cfg_tx_0_channel_frame_size` | 5 | Select the tx channel 0 frame size, i.e. cfg_tx_0_channel_frame_size + 1 slots inside each frame: 0x0: 1 slot in a output frame; 0x1: 2 slots in a output frame...  |
+| `cfg_tx_0_channel_slot_size` | 2 | Select the tx channel 0 slot size, i.e. 0: 8 bits, 1: 16 bits, 2: 24 bits, 3: 32 bits |
+
+### 6.3 TX channel 0 Frame Format Regeister Low
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_1_slot_0` | 4 | Select which input channel data will be put in slot_0 of each frame |
+| `cfg_tx_1_slot_1` | 4 | Select which input channel data will be put in slot_1 of each frame |
+| `cfg_tx_1_slot_2` | 4 | Select which input channel data will be put in slot_2 of each frame |
+| `cfg_tx_1_slot_3` | 4 | Select which input channel data will be put in slot_3 of each frame |
+| `cfg_tx_1_slot_4` | 4 | Select which input channel data will be put in slot_4 of each frame |
+| `cfg_tx_1_slot_5` | 4 | Select which input channel data will be put in slot_5 of each frame |
+| `cfg_tx_1_slot_6` | 4 | Select which input channel data will be put in slot_6 of each frame |
+| `cfg_tx_1_slot_7` | 4 | Select which input channel data will be put in slot_7 of each frame |
+
+
+### 6.3 TX channel 0 Frame Format Regeister Low
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_1_slot_8` | 4 | Select which input channel data will be put in slot_8 of each frame |
+| `cfg_tx_1_slot_9` | 4 | Select which input channel data will be put in slot_9 of each frame |
+| `cfg_tx_1_slot_10` | 3 | Select which input channel data will be put in slot_10 of each frame |
+| `cfg_tx_1_slot_11` | 3 | Select which input channel data will be put in slot_11 of each frame |
+| `cfg_tx_1_slot_12` | 3 | Select which input channel data will be put in slot_12 of each frame |
+| `cfg_tx_1_slot_13` | 3 | Select which input channel data will be put in slot_13 of each frame |
+| `cfg_tx_1_slot_14` | 3 | Select which input channel data will be put in slot_14 of each frame |
+| `cfg_tx_1_slot_15` | 3 | Select which input channel data will be put in slot_15 of each frame |
+
+
 
 The output order of channel 0 is as follows, assume all 8 inptut rx channels are selected to be merged and output through tx channel 0:
 
