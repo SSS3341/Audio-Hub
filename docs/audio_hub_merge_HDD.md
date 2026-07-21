@@ -192,16 +192,13 @@ The physical input index identifies the channel.
                         16'b0000_0000_0000_0001 enables channel 1
                         16'b0000_0000_0000_0100 enables channel 3
                         16'b0000_0000_0000_0101 enables channel 1 and channel 3 |
-| `cfg_merge_txen` | 4 | Each bit enables corresponding output tx channel respectively, for example: \n
-                        4'b0001 enables channel 1 \n
-                        4'b0100 enables channel 3 \n
-                        4'b0101 enables channel 1 and channel 3 |
+| `cfg_merge_txen` | 4 | Each bit enables corresponding output tx channel respectively, for example:<br>4'b0001 enables channel 1<br>4'b0100 enables channel 3<br>4'b0101 enables channel 1 and channel 3 |
 
 ### 6.2 TX Channel 0 Merge Format Register
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_0_channel_src_sel` | 16 | Select rx source FIFO for channel 0 output stream |
-| `cfg_tx_0_channel_frame_size` | 5 | Select the tx channel 0 frame size, i.e. cfg_tx_0_channel_frame_size + 1 slots inside each frame: 0x0: 1 slot in a output frame; 0x1: 2 slots in a output frame... 0x1f: 32 slots(max slot number of one frame)  |
+| `cfg_tx_0_channel_frame_size` | 5 | Select the tx channel 0 frame size, i.e. cfg_tx_0_channel_frame_size + 1 slots inside each frame: 0x0: 1 slot in a output frame; 0x1: 2 slots in a output frame...<br>0x1f: 32 slots(max slot number of one frame)  |
 | `cfg_tx_0_channel_slot_size` | 2 | Select the tx channel 0 slot size, i.e. 0: 8 bits, 1: 16 bits, 2: 24 bits, 3: 32 bits |
 
 ### 6.3 TX Channel 0 Frame Enable Register
