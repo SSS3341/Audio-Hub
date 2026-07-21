@@ -192,9 +192,9 @@ The physical input index identifies the channel.
                         16'b0000_0000_0000_0001 enables channel 1
                         16'b0000_0000_0000_0100 enables channel 3
                         16'b0000_0000_0000_0101 enables channel 1 and channel 3 |
-| `cfg_merge_txen` | 4 | Each bit enables corresponding output tx channel respectively, for example:
-                        4'b0001 enables channel 1
-                        4'b0100 enables channel 3
+| `cfg_merge_txen` | 4 | Each bit enables corresponding output tx channel respectively, for example: \n
+                        4'b0001 enables channel 1 \n
+                        4'b0100 enables channel 3 \n
                         4'b0101 enables channel 1 and channel 3 |
 
 ### 6.2 TX Channel 0 Merge Format Register
