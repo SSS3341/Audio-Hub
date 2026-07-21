@@ -201,10 +201,18 @@ The physical input index identifies the channel.
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_0_channel_src_sel` | 16 | Select rx source FIFO for channel 0 output stream |
-| `cfg_tx_0_channel_frame_size` | 5 | Select the tx channel 0 frame size, i.e. cfg_tx_0_channel_frame_size + 1 slots inside each frame: 0x0: 1 slot in a output frame; 0x1: 2 slots in a output frame...  |
+| `cfg_tx_0_channel_frame_size` | 5 | Select the tx channel 0 frame size, i.e. cfg_tx_0_channel_frame_size + 1 slots inside each frame: 0x0: 1 slot in a output frame; 0x1: 2 slots in a output frame... 0x1f: 32 slots(max slot number of one frame)  |
 | `cfg_tx_0_channel_slot_size` | 2 | Select the tx channel 0 slot size, i.e. 0: 8 bits, 1: 16 bits, 2: 24 bits, 3: 32 bits |
 
-### 6.3 TX channel 0 Frame Format Regeister Low
+### 6.3 TX Channel 0 Frame Enable Register
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_0_channel_frame_enable` | 32 | Select slots that are enabled inside one frame for tx channel 0 output stream, for example: 
+32'b0000_0000_0000_0011: enable slot0 and slot1 inside one frame
+32'b0000_0000_0000_0111: enable slot0, slot1, slot2 inside one frame
+Setting bit N to enable slot N inside one frame, tx channel frame enable needs to be consecutive|
+
+### 6.4 TX channel 0 Frame Format 0 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_1_slot_0` | 4 | Select which input channel data will be put in slot_0 of each frame |
@@ -217,7 +225,7 @@ The physical input index identifies the channel.
 | `cfg_tx_1_slot_7` | 4 | Select which input channel data will be put in slot_7 of each frame |
 
 
-### 6.3 TX channel 0 Frame Format Regeister Low
+### 6.5 TX channel 0 Frame Format 1 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_1_slot_8` | 4 | Select which input channel data will be put in slot_8 of each frame |
@@ -229,9 +237,31 @@ The physical input index identifies the channel.
 | `cfg_tx_1_slot_14` | 3 | Select which input channel data will be put in slot_14 of each frame |
 | `cfg_tx_1_slot_15` | 3 | Select which input channel data will be put in slot_15 of each frame |
 
+### 6.6 TX channel 0 Frame Format 2 Regeister 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_1_slot_16` | 4 | Select which input channel data will be put in slot_16 of each frame |
+| `cfg_tx_1_slot_17` | 4 | Select which input channel data will be put in slot_17 of each frame |
+| `cfg_tx_1_slot_18` | 3 | Select which input channel data will be put in slot_18 of each frame |
+| `cfg_tx_1_slot_19` | 3 | Select which input channel data will be put in slot_19 of each frame |
+| `cfg_tx_1_slot_20` | 3 | Select which input channel data will be put in slot_20 of each frame |
+| `cfg_tx_1_slot_21` | 3 | Select which input channel data will be put in slot_21 of each frame |
+| `cfg_tx_1_slot_22` | 3 | Select which input channel data will be put in slot_22 of each frame |
+| `cfg_tx_1_slot_23` | 3 | Select which input channel data will be put in slot_23 of each frame |
 
+### 6.7 TX channel 0 Frame Format 3 Regeister 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_1_slot_24` | 4 | Select which input channel data will be put in slot_24 of each frame |
+| `cfg_tx_1_slot_25` | 4 | Select which input channel data will be put in slot_25 of each frame |
+| `cfg_tx_1_slot_26` | 3 | Select which input channel data will be put in slot_26 of each frame |
+| `cfg_tx_1_slot_27` | 3 | Select which input channel data will be put in slot_27 of each frame |
+| `cfg_tx_1_slot_28` | 3 | Select which input channel data will be put in slot_28 of each frame |
+| `cfg_tx_1_slot_29` | 3 | Select which input channel data will be put in slot_29 of each frame |
+| `cfg_tx_1_slot_30` | 3 | Select which input channel data will be put in slot_30 of each frame |
+| `cfg_tx_1_slot_31` | 3 | Select which input channel data will be put in slot_31 of each frame |
 
-The output order of channel 0 is as follows, assume all 8 inptut rx channels are selected to be merged and output through tx channel 0:
+The output order of tx stream 0 is as follows, assume tx channel frame size is 8, enabling slot 0 to slot 7, slot size is 32 bits, which input stream is connected to each slot dependes on tx channel 0 frame format registers:
 
 ```text
 Merged output:
@@ -239,66 +269,201 @@ Merged output:
 |                                                                 |  
 Frame 1                                                           Frame 2
 ```
-### 6.3 TX Channel 1 Merge Format Register
+### 6.8 TX Channel 1 Frame Enable Register
 | Sigal | Width | Description |
 |---|---:|---|
-| `cfg_tx_1_channel_src_sel` | 8 | Select rx source FIFO for channel 0 output stream |
-| `cfg_tx_1_slot_0` | 3 | Select which input channel data will be put in slot_0 of each frame |
-| `cfg_tx_1_slot_1` | 3 | Select which input channel data will be put in slot_1 of each frame |
-| `cfg_tx_1_slot_2` | 3 | Select which input channel data will be put in slot_2 of each frame |
-| `cfg_tx_1_slot_3` | 3 | Select which input channel data will be put in slot_3 of each frame |
-| `cfg_tx_1_slot_4` | 3 | Select which input channel data will be put in slot_4 of each frame |
-| `cfg_tx_1_slot_5` | 3 | Select which input channel data will be put in slot_5 of each frame |
-| `cfg_tx_1_slot_6` | 3 | Select which input channel data will be put in slot_6 of each frame |
-| `cfg_tx_1_slot_7` | 3 | Select which input channel data will be put in slot_7 of each frame |
+| `cfg_tx_0_channel_frame_enable` | 32 | Select slots that are enabled inside one frame for tx Channel 1 output stream, for example: 
+32'b0000_0000_0000_0011: enable slot0 and slot1 inside one frame
+32'b0000_0000_0000_0111: enable slot0, slot1, slot2 inside one frame
+Setting bit N to enable slot N inside one frame, tx channel frame enable needs to be consecutive|
 
-### 6.4 TX Channel 2 Merge Format Register
+### 6.9 TX Channel 1 Frame Format 0 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
-| `cfg_tx_2_channel_src_sel` | 8 | Select rx source FIFO for channel 0 output stream |
-| `cfg_tx_2_slot_0` | 3 | Select which input channel data will be put in slot_0 of each frame |
-| `cfg_tx_2_slot_1` | 3 | Select which input channel data will be put in slot_1 of each frame |
-| `cfg_tx_2_slot_2` | 3 | Select which input channel data will be put in slot_2 of each frame |
-| `cfg_tx_2_slot_3` | 3 | Select which input channel data will be put in slot_3 of each frame |
-| `cfg_tx_2_slot_4` | 3 | Select which input channel data will be put in slot_4 of each frame |
-| `cfg_tx_2_slot_5` | 3 | Select which input channel data will be put in slot_5 of each frame |
-| `cfg_tx_2_slot_6` | 3 | Select which input channel data will be put in slot_6 of each frame |
-| `cfg_tx_2_slot_7` | 3 | Select which input channel data will be put in slot_7 of each frame |
+| `cfg_tx_1_slot_0` | 4 | Select which input channel data will be put in slot_0 of each frame |
+| `cfg_tx_1_slot_1` | 4 | Select which input channel data will be put in slot_1 of each frame |
+| `cfg_tx_1_slot_2` | 4 | Select which input channel data will be put in slot_2 of each frame |
+| `cfg_tx_1_slot_3` | 4 | Select which input channel data will be put in slot_3 of each frame |
+| `cfg_tx_1_slot_4` | 4 | Select which input channel data will be put in slot_4 of each frame |
+| `cfg_tx_1_slot_5` | 4 | Select which input channel data will be put in slot_5 of each frame |
+| `cfg_tx_1_slot_6` | 4 | Select which input channel data will be put in slot_6 of each frame |
+| `cfg_tx_1_slot_7` | 4 | Select which input channel data will be put in slot_7 of each frame |
 
-### 6.5 TX Channel 3 Merge Format Register
-| Sigal | Width | Description |
-|---|---:|---|
-| `cfg_tx_3_channel_src_sel` | 8 | Select rx source FIFO for channel 0 output stream |
-| `cfg_tx_3_slot_0` | 3 | Select which input channel data will be put in slot_0 of each frame |
-| `cfg_tx_3_slot_1` | 3 | Select which input channel data will be put in slot_1 of each frame |
-| `cfg_tx_3_slot_2` | 3 | Select which input channel data will be put in slot_2 of each frame |
-| `cfg_tx_3_slot_3` | 3 | Select which input channel data will be put in slot_3 of each frame |
-| `cfg_tx_3_slot_4` | 3 | Select which input channel data will be put in slot_4 of each frame |
-| `cfg_tx_3_slot_5` | 3 | Select which input channel data will be put in slot_5 of each frame |
-| `cfg_tx_3_slot_6` | 3 | Select which input channel data will be put in slot_6 of each frame |
-| `cfg_tx_3_slot_7` | 3 | Select which input channel data will be put in slot_7 of each frame |
 
-### 6.6 TX Channel Frame Setting Register
+### 6.10 TX Channel 1 Frame Format 1 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
-| `cfg_tx_0_frame_num` | 3 | Select tx channel 0 merged rx frame number |
-| `cfg_tx_1_frame_num` | 3 | Select tx channel 1 merged rx frame number |
-| `cfg_tx_2_frame_num` | 3 | Select tx channel 2 merged rx frame number |
-| `cfg_tx_3_frame_num` | 3 | Select tx channel 3 merged rx frame number |
+| `cfg_tx_1_slot_8` | 4 | Select which input channel data will be put in slot_8 of each frame |
+| `cfg_tx_1_slot_9` | 4 | Select which input channel data will be put in slot_9 of each frame |
+| `cfg_tx_1_slot_10` | 3 | Select which input channel data will be put in slot_10 of each frame |
+| `cfg_tx_1_slot_11` | 3 | Select which input channel data will be put in slot_11 of each frame |
+| `cfg_tx_1_slot_12` | 3 | Select which input channel data will be put in slot_12 of each frame |
+| `cfg_tx_1_slot_13` | 3 | Select which input channel data will be put in slot_13 of each frame |
+| `cfg_tx_1_slot_14` | 3 | Select which input channel data will be put in slot_14 of each frame |
+| `cfg_tx_1_slot_15` | 3 | Select which input channel data will be put in slot_15 of each frame |
 
-### 6.7 Tx Channel Slot Setting Register
+### 6.11 TX Channel 1 Frame Format 2 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
-| `cfg_tx_0_slot_size` | 3 | Select tx channel 0 slot size: 0 8bits, 1 16bits, 2 24bits, 3 32bits |
-| `cfg_tx_1_slot_size` | 3 | Select tx channel 1 slot size: 0 8bits, 1 16bits, 2 24bits, 3 32bits |
-| `cfg_tx_2_slot_size` | 3 | Select tx channel 2 slot size: 0 8bits, 1 16bits, 2 24bits, 3 32bits |
-| `cfg_tx_3_slot_size` | 3 | Select tx channel 3 slot size: 0 8bits, 1 16bits, 2 24bits, 3 32bits |
+| `cfg_tx_1_slot_16` | 4 | Select which input channel data will be put in slot_16 of each frame |
+| `cfg_tx_1_slot_17` | 4 | Select which input channel data will be put in slot_17 of each frame |
+| `cfg_tx_1_slot_18` | 3 | Select which input channel data will be put in slot_18 of each frame |
+| `cfg_tx_1_slot_19` | 3 | Select which input channel data will be put in slot_19 of each frame |
+| `cfg_tx_1_slot_20` | 3 | Select which input channel data will be put in slot_20 of each frame |
+| `cfg_tx_1_slot_21` | 3 | Select which input channel data will be put in slot_21 of each frame |
+| `cfg_tx_1_slot_22` | 3 | Select which input channel data will be put in slot_22 of each frame |
+| `cfg_tx_1_slot_23` | 3 | Select which input channel data will be put in slot_23 of each frame |
 
-### 6.8 RX FIFO Flush Register 
+### 6.12 TX Channel 1 Frame Format 3 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
-| `cfg_rx_fifo_flush` | 8 | Each bit provides rx flush signal of each rx channel respectively |
-| `RESERVE` | 24 | Reserved |
+| `cfg_tx_1_slot_24` | 4 | Select which input channel data will be put in slot_24 of each frame |
+| `cfg_tx_1_slot_25` | 4 | Select which input channel data will be put in slot_25 of each frame |
+| `cfg_tx_1_slot_26` | 3 | Select which input channel data will be put in slot_26 of each frame |
+| `cfg_tx_1_slot_27` | 3 | Select which input channel data will be put in slot_27 of each frame |
+| `cfg_tx_1_slot_28` | 3 | Select which input channel data will be put in slot_28 of each frame |
+| `cfg_tx_1_slot_29` | 3 | Select which input channel data will be put in slot_29 of each frame |
+| `cfg_tx_1_slot_30` | 3 | Select which input channel data will be put in slot_30 of each frame |
+| `cfg_tx_1_slot_31` | 3 | Select which input channel data will be put in slot_31 of each frame |
+
+### 6.13 TX Channel 2 Frame Enable Register
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_0_channel_frame_enable` | 32 | Select slots that are enabled inside one frame for tx Channel 2 output stream, for example: 
+32'b0000_0000_0000_0011: enable slot0 and slot1 inside one frame
+32'b0000_0000_0000_0111: enable slot0, slot1, slot2 inside one frame
+Setting bit N to enable slot N inside one frame, tx channel frame enable needs to be consecutive|
+
+### 6.14 TX Channel 2 Frame Format 0 Regeister 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_1_slot_0` | 4 | Select which input channel data will be put in slot_0 of each frame |
+| `cfg_tx_1_slot_1` | 4 | Select which input channel data will be put in slot_1 of each frame |
+| `cfg_tx_1_slot_2` | 4 | Select which input channel data will be put in slot_2 of each frame |
+| `cfg_tx_1_slot_3` | 4 | Select which input channel data will be put in slot_3 of each frame |
+| `cfg_tx_1_slot_4` | 4 | Select which input channel data will be put in slot_4 of each frame |
+| `cfg_tx_1_slot_5` | 4 | Select which input channel data will be put in slot_5 of each frame |
+| `cfg_tx_1_slot_6` | 4 | Select which input channel data will be put in slot_6 of each frame |
+| `cfg_tx_1_slot_7` | 4 | Select which input channel data will be put in slot_7 of each frame |
+
+
+### 6.15 TX Channel 2 Frame Format 1 Regeister 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_1_slot_8` | 4 | Select which input channel data will be put in slot_8 of each frame |
+| `cfg_tx_1_slot_9` | 4 | Select which input channel data will be put in slot_9 of each frame |
+| `cfg_tx_1_slot_10` | 3 | Select which input channel data will be put in slot_10 of each frame |
+| `cfg_tx_1_slot_11` | 3 | Select which input channel data will be put in slot_11 of each frame |
+| `cfg_tx_1_slot_12` | 3 | Select which input channel data will be put in slot_12 of each frame |
+| `cfg_tx_1_slot_13` | 3 | Select which input channel data will be put in slot_13 of each frame |
+| `cfg_tx_1_slot_14` | 3 | Select which input channel data will be put in slot_14 of each frame |
+| `cfg_tx_1_slot_15` | 3 | Select which input channel data will be put in slot_15 of each frame |
+
+### 6.16 TX Channel 2 Frame Format 2 Regeister 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_1_slot_16` | 4 | Select which input channel data will be put in slot_16 of each frame |
+| `cfg_tx_1_slot_17` | 4 | Select which input channel data will be put in slot_17 of each frame |
+| `cfg_tx_1_slot_18` | 3 | Select which input channel data will be put in slot_18 of each frame |
+| `cfg_tx_1_slot_19` | 3 | Select which input channel data will be put in slot_19 of each frame |
+| `cfg_tx_1_slot_20` | 3 | Select which input channel data will be put in slot_20 of each frame |
+| `cfg_tx_1_slot_21` | 3 | Select which input channel data will be put in slot_21 of each frame |
+| `cfg_tx_1_slot_22` | 3 | Select which input channel data will be put in slot_22 of each frame |
+| `cfg_tx_1_slot_23` | 3 | Select which input channel data will be put in slot_23 of each frame |
+
+### 6.17 TX Channel 2 Frame Format 3 Regeister 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_1_slot_24` | 4 | Select which input channel data will be put in slot_24 of each frame |
+| `cfg_tx_1_slot_25` | 4 | Select which input channel data will be put in slot_25 of each frame |
+| `cfg_tx_1_slot_26` | 3 | Select which input channel data will be put in slot_26 of each frame |
+| `cfg_tx_1_slot_27` | 3 | Select which input channel data will be put in slot_27 of each frame |
+| `cfg_tx_1_slot_28` | 3 | Select which input channel data will be put in slot_28 of each frame |
+| `cfg_tx_1_slot_29` | 3 | Select which input channel data will be put in slot_29 of each frame |
+| `cfg_tx_1_slot_30` | 3 | Select which input channel data will be put in slot_30 of each frame |
+| `cfg_tx_1_slot_31` | 3 | Select which input channel data will be put in slot_31 of each frame |
+
+### 6.18 TX Channel 3 Frame Enable Register
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_0_channel_frame_enable` | 32 | Select slots that are enabled inside one frame for tx Channel 3 output stream, for example: 
+32'b0000_0000_0000_0011: enable slot0 and slot1 inside one frame
+32'b0000_0000_0000_0111: enable slot0, slot1, slot2 inside one frame
+Setting bit N to enable slot N inside one frame, tx channel frame enable needs to be consecutive|
+
+### 6.19 TX Channel 3 Frame Format 0 Regeister 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_1_slot_0` | 4 | Select which input channel data will be put in slot_0 of each frame |
+| `cfg_tx_1_slot_1` | 4 | Select which input channel data will be put in slot_1 of each frame |
+| `cfg_tx_1_slot_2` | 4 | Select which input channel data will be put in slot_2 of each frame |
+| `cfg_tx_1_slot_3` | 4 | Select which input channel data will be put in slot_3 of each frame |
+| `cfg_tx_1_slot_4` | 4 | Select which input channel data will be put in slot_4 of each frame |
+| `cfg_tx_1_slot_5` | 4 | Select which input channel data will be put in slot_5 of each frame |
+| `cfg_tx_1_slot_6` | 4 | Select which input channel data will be put in slot_6 of each frame |
+| `cfg_tx_1_slot_7` | 4 | Select which input channel data will be put in slot_7 of each frame |
+
+
+### 6.20 TX Channel 3 Frame Format 1 Regeister 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_1_slot_8` | 4 | Select which input channel data will be put in slot_8 of each frame |
+| `cfg_tx_1_slot_9` | 4 | Select which input channel data will be put in slot_9 of each frame |
+| `cfg_tx_1_slot_10` | 3 | Select which input channel data will be put in slot_10 of each frame |
+| `cfg_tx_1_slot_11` | 3 | Select which input channel data will be put in slot_11 of each frame |
+| `cfg_tx_1_slot_12` | 3 | Select which input channel data will be put in slot_12 of each frame |
+| `cfg_tx_1_slot_13` | 3 | Select which input channel data will be put in slot_13 of each frame |
+| `cfg_tx_1_slot_14` | 3 | Select which input channel data will be put in slot_14 of each frame |
+| `cfg_tx_1_slot_15` | 3 | Select which input channel data will be put in slot_15 of each frame |
+
+### 6.21 TX Channel 3 Frame Format 2 Regeister 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_1_slot_16` | 4 | Select which input channel data will be put in slot_16 of each frame |
+| `cfg_tx_1_slot_17` | 4 | Select which input channel data will be put in slot_17 of each frame |
+| `cfg_tx_1_slot_18` | 3 | Select which input channel data will be put in slot_18 of each frame |
+| `cfg_tx_1_slot_19` | 3 | Select which input channel data will be put in slot_19 of each frame |
+| `cfg_tx_1_slot_20` | 3 | Select which input channel data will be put in slot_20 of each frame |
+| `cfg_tx_1_slot_21` | 3 | Select which input channel data will be put in slot_21 of each frame |
+| `cfg_tx_1_slot_22` | 3 | Select which input channel data will be put in slot_22 of each frame |
+| `cfg_tx_1_slot_23` | 3 | Select which input channel data will be put in slot_23 of each frame |
+
+### 6.22 TX Channel 3 Frame Format 3 Regeister 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_1_slot_24` | 4 | Select which input channel data will be put in slot_24 of each frame |
+| `cfg_tx_1_slot_25` | 4 | Select which input channel data will be put in slot_25 of each frame |
+| `cfg_tx_1_slot_26` | 3 | Select which input channel data will be put in slot_26 of each frame |
+| `cfg_tx_1_slot_27` | 3 | Select which input channel data will be put in slot_27 of each frame |
+| `cfg_tx_1_slot_28` | 3 | Select which input channel data will be put in slot_28 of each frame |
+| `cfg_tx_1_slot_29` | 3 | Select which input channel data will be put in slot_29 of each frame |
+| `cfg_tx_1_slot_30` | 3 | Select which input channel data will be put in slot_30 of each frame |
+| `cfg_tx_1_slot_31` | 3 | Select which input channel data will be put in slot_31 of each frame |
+
+### 6.23 RX FIFO Flush Register 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_rx_fifo_flush` | 16 | Each bit provides rx flush signal of each rx channel respectively |
+
+### 6.24 RX FIFO Overflow Register 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_rx_fifo_overflow` | 16 | Each bit represents rx FIFO overflow each rx channel respectively |
+
+### 6.25 TX FIFO Overflow Register 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_rx_fifo_overflow` | 4 | Each bit represents tx FIFO overflow each tx channel respectively |
+
+### 6.26 TX FIFO Flush Register 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_rx_fifo_flush` | 4 | Each bit provides tx FIFO Flush for each tx channel respectively |
+
+### 6.27 RX channal 0 IDLE Count Register 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_rx_0_idle_count` | 32 | When RX channel 0 is enabled, if RX channel 0 does not receive valid data for cfg_rx_0_idle_count merge_clk cycles, assert rx channel 0 timeout interrupt |
 
 ---
 
