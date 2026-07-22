@@ -4,7 +4,7 @@
 **Module name:** `audio_channel_merge`  
 ---
 
-## 1. Overview
+## 1. Introduction
 
 The Channel Merge IP supports merge up to 16 independent input rx audio streams into 4 output streams, each output stream can be merged of any combination of the 16 intput streams. Software needs to config corresponding registers to choose the merge style of each output tx channel. The Merge IP supports 3 output data packing formants for each tx channel:
 

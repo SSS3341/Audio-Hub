@@ -1,310 +1,365 @@
-# Audio Hub Channel Mixer IP Hardware Design Description
+# Audio Hub Mixer IP Hardware Design Description
 
-**Document version:** v1.0  
-**Module name:** `audio_channel_merge`  
+| Item | Value |
+| --- | --- |
+| Document | Hardware Design Description / IP Databook |
+| IP name | Audio Hub Mixer |
+| RTL module | `audio_hub_mixer` |
+| Version | v1.0 |
+| Status | Design baseline |
+| Maximum configuration | 8 input streams × 4 output streams |
+
 ---
 
-## 1. Overview
+## 1. Introduction
 
-The Channel Mixer IP supports merge 8 independent input rx audio streams into 4 channel output streams, each output stream can be merged of any combination of the 8 intput streams. Software needs to config corresponding registers to choose the merge style of each output tx channel.
+### 1.1 Purpose
 
-Each input channel is carried on an independent `valid/ready/data` interface. The input port number identifies the source channel. The output remains 32 bits wide and carries one sample per successful transfer(i.e per valid/ready handshake). Output slot identity is therefore represented implicitly by the transfer order.
+This document defines the functional behavior, microarchitecture, interfaces, register map, timing, error handling, programming model, and verification requirements of the Audio Hub Mixer IP.
 
-For example, for two channels:
+The Mixer combines selected synchronous input samples by signed addition. It supports up to eight independent input audio streams and four independent output audio streams. Each output has its own selection mask register and may select any subset of the eight inputs. The same input sample may be used by multiple outputs, but is consumed only once per mixing process.
+
+### 1.2 Scope
+
+The IP performs only sample routing and summation:
+
+- 8 input streams.
+- 4 output streams.
+- Independent input-selection mask for each output.
+- Unsigned/Signed parallel accumulation.  TBD
+- Configurable saturation or wraparound at the output width.
+- Ready/valid flow control with input and output buffering.
+
+### 1.3 Explicit exclusions
+
+The following functions are outside the Mixer:
+
+- Gain, volume, coefficient multiplication, normalization, or gain matrix.
+- Sample-rate conversion or asynchronous-rate matching.
+- Automatic sample insertion, zero filling, or sample dropping.
+- Channel packing, interleave, planar conversion, or slot reordering.
+- DMA request generation.
+- Clock-domain crossing.
+
+Gain adjustment shall be performed by the Audio Hub Digital Gain IP. Channel packing shall be performed by the Merge IP. Any asynchronous source shall pass through a CDC FIFO or sample-rate conversion block before entering the Mixer.
+
+---
+
+## 2. Features
+
+- Supports 8 inputs and 4 outputs.
+- Default 32-bit signed PCM; 16-bit and 24-bit PCM are also supported through `DATA_WIDTH`.
+- Four independent 8-input selection masks registers.
+- One input may feed any number of outputs without being popped multiple times.
+- Balanced signed adder tree for each output.
+- Internal accumulator width of `DATA_WIDTH + 3` bits for lossless summation of eight full-scale inputs.
+- Output saturation enabled by default; wraparound mode is available for compatibility.
+- Per-channel input FIFO and per-channel output FIFO.
+- Independent output ready/valid interfaces.
+
+---
+
+## 3. Configurable Parameters
+
+| Parameter | Legal values | Default | Description |
+| --- | ---: | ---: | --- |
+| `IN_FIFO_DEPTH` | Power of 2, ≥2 | 4 | Depth of each input FIFO. |
+| `OUT_FIFO_DEPTH` | Power of 2, ≥2 | 4 | Depth of each output FIFO. |
+
+---
+
+## 4. Functional Description
+
+### 4.1 Mixing equation
+
+For output `o`, input `i`, and mixing slot `n`:
 
 ```text
-Input stream 0: A0, A1, A2, A3, ...
-Input stream 1: B0, B1, B2, B3, ...
+select[o][i] = output_enable[o] & input_enable[i] 
 
-Mixd output stream:
-A0, B0, A1, B1, A2, B2, A3, B3, ...
+acc[o,n] = sum(input[i,n]) for every i where select[o][i] = 1
+
+output[o,n] = saturate_or_wrap(acc[o,n], DATA_WIDTH)
 ```
 
-For four input channels:
+No coefficient multiplication is performed. A selected input contributes exactly its signed PCM value. An unselected input contributes zero.
+
+### 4.2 Sample alignment contract
+
+The Mixer aligns streams by sample order, not by timestamp. The first sample popped from every required FIFO belongs to the same logical sample time, followed by the second sample from each FIFO, and so on.
+
+Therefore:
+
+- The Mixer waits when any required input FIFO is empty.
+- Temporary arrival skew is absorbed by the input FIFOs.
+- The Mixer reports error when any of the input stream timeout.
+
+Software should disable and flush the Mixer when a matrix change also changes stream alignment membership.
+
+### 4.3 Input acceptance
+
+For a currently required input:
 
 ```text
-Input stream 0: A0, A1, A2, A3, ...
-Input stream 1: B0, B1, B2, B3, ...
-Input stream 2: C0, C1, C2, C3, ...
-Input stream 3: D0, D1, D2, D3, ...
-
-Mixd output stream:
-A0, B0, C0, D0, A1, B1, C1, D1, A2, B2, C2, D2, A3, B3, C3, D3 ...
+input_ready[i] = mixer_enable & mixer_input_rx_enable[i] !input_fifo_full[i]
 ```
 
-The slot index of output channel is inferred by a handshake-driven slot counter. The slot counter increments only when `tx_valid && tx_ready`.
+`input_ready[i]` is low for disabled or FIFO full. The Mixer does not silently discard unused samples. A transfer is accepted only when `input_valid[i] && input_ready[i]` is true.
+
+Each producer shall hold `input_valid` and `input_data` stable until the transfer is accepted.
+
+### 4.4 Slot scheduling
+
+A new calculated slot may begin only when all of the following are true:
+
+- Mixer is enabled.
+- Active configuration is valid.
+- No previous slot is using the non-overlapped arithmetic pipeline.
+- Every required input FIFO is non-empty.
+- Every enabled output FIFO has at least one free entry.
+- Flush or soft reset is not active.
+
+The scheduler then pops all required inputs in the same clock cycle and captures the samples. All enabled outputs are calculated in parallel.
+
+### 4.5 Output enqueue and backpressure
+
+Results from one slots are written atomically into the noted enabled output FIFOs. Output FIFOs drain independently through their respective ready/valid interfaces.
+
+If one output stalls, other output FIFOs continue draining. All output tx channel has its own independent FIFO. Once asserted, `output_valid[o]` remains asserted and `output_data[o]` remains stable until `output_ready[o]` is observed high.
+
+### 4.6 Disable and flush behavior
+
+- Clearing `CTRL.EN` prevents new slots generation from starting. In-flight arithmetic completes and already queued output data remains available to drain.
+- `CTRL.FLUSH` immediately stops acceptance, invalidates in-flight work, clears all input and output FIFOs, and then sets `IRQ_STATUS.FLUSH_DONE`.
+- `CTRL.SOFT_RESET` performs a flush, disables the engine, clears active and shadow configuration, status, and counters, and restores reset defaults.
+
+`FLUSH` intentionally discards buffered audio samples and shall be used only when a discontinuity is acceptable or required for realignment.
 
 ---
 
-## 2. Design Features
+## 5. System Architecture
 
+visio diagram
 
-| ID | Feature |
-|----|---------|
-| 1 | Support 8 independent 32-bit input streams |
-| 2 | Each input channel has independently rx FIFO |
-| 3 | Preserve per-channel sample ordering |
-| 4 | Emit samples in a fixed, configurable slot sequence |
-| 5 | Maintain slot ordering under downstream backpressure |
-| 6 | Support expansion from two channels inputs to 8 channels inputs through parameters |
-| 7 | Support routing of the merged stream back to the Audio Hub crossbar |
-| 8 | Support tx FIFO to store merged stream data before sending to crossbar |
-| 9 | Support chaining with Digital Gain or other processing IPs through the crossbar |
-| 10 | Detect FIFO overflow, underflow, and prolonged alignment wait |
-| 11 | Support safe flush, disable, and reconfiguration |
+## 6. Datapath Design
 
----
+All operands are sign-extended to `ACC_WIDTH` before addition. Intermediate nodes retain `ACC_WIDTH`; this width can represent the exact sum of eight `DATA_WIDTH` signed operands.
 
-## 3. System-level Diagram
+### 6.1 Saturation and wraparound
+
+The representable output range is:
 
 ```text
-                           +------------------+
-I2S RX0 ------------------>|                  |
-I2S RX1 ------------------>|     Crossbar     |
-I2S RXn ------------------>|                  |
-                           +--------+---------+
-                                    |
-                                    v
-                           +------------------+
-                           |  Channel Mix   |
-                           +--------+---------+
-                                    |
-                                    v
-                            Crossbar return
-                                    |              
-                                    v
-                   DG / Mixer / I2S/ DMA adapter stream
+MAX =  2^(DATA_WIDTH-1) - 1
+MIN = -2^(DATA_WIDTH-1)
 ```
 
-The crossbar treats the merge IP as a multi-port sink on the input side and a single-stream source on the output side. The crossbar shall not modify sample ordering.
-
----
-
-## 4. Architecture
-
-The architecture consists of receive stream control, a per-channel FIFO bank, merge scheduling/output control, and output selection/status logic.
+When `SAT_CTRL.SAT_EN = 1`:
 
 ```text
-                            +----------------------+
-rx_valid[N-1:0] ----------->|                      |
-rx_data[N-1:0][31:0] ------>|    RX Stream FSM     |
-rx_ready[N-1:0] <-----------|                      |
-                            +----------+-----------+
-                                       |
-                wr_en[N-1:0]           |
-                wdata[N-1:0][31:0]     |
-                                       v
-                +------------------------------------------+
-                |            RX FIFO Bank                  |
-                | +---------+ +---------+        +--------+|
-                | | FIFO 0  | | FIFO 1  |  ...   | FIFO N ||
-                | +---------+ +---------+        +--------+|
-                +--------------------+---------------------+
-                                     |
-                rdata[N-1:0][31:0]   |
-                empty[N-1:0]         |
-                word_cnt[N-1:0]      |
-                                     v
-      +------------------+------------------+------------------+
-      |                  |                  |                  |
-      v                  v                  v                  v
-+-----------+      +-----------+      +-----------+      +-----------+
-| TX0 Mix |      | TX1 Mix |      | TX2 Mix |      | TX3 Mix |
-| Scheduler |      | Scheduler |      | Scheduler |      | Scheduler |
-+-----+-----+      +-----+-----+      +-----+-----+      +-----+-----+
-      |                  |                  |                  |
-      v                  v                  v                  v
-+-----------+      +-----------+      +-----------+      +-----------+
-| TX FIFO 0 |      | TX FIFO 1 |      | TX FIFO 2 |      | TX FIFO 3 |
-+-----+-----+      +-----+-----+      +-----+-----+      +-----+-----+
-      |                  |                  |                  |
- valid/ready/data   valid/ready/data   valid/ready/data   valid/ready/data
-      |                  |                  |                  |
-      +---------------- Crossbar sources ---------------------+
-
-                                       |
-                              tx_valid/ready/data
-                                       |
-                                       |               
-                                       v               
-                                Crossbar output     
-                                         
+acc > MAX  -> output = MAX
+acc < MIN  -> output = MIN
+otherwise  -> output = acc[DATA_WIDTH-1:0]
 ```
+
+When `SAT_EN = 0`, the low `DATA_WIDTH` bits are returned, producing two's-complement wraparound. Overflow detection and counters remain active in both modes.
+
+There is no rounding step because the Mixer performs no scaling and discards no fractional bits.
 
 ---
 
-## 5. Interface definition
+## 7. Interface Description
 
-### 5.1 Parameters
-
-parameter DATA_W                = 32;
-parameter RX_FIFO_DEPTH         = 4;
-parameter TX_FIFO_DEPTH         = 32; 
-
-### 5.2 Clock and reset
+### 7.1 Clock and reset
 
 | Signal | Direction | Width | Description |
-|---|---:|---:|---|
-| `clk_merge` | Input | 1 | Audio Hub processing clock |
-| `rstn_merge` | Input | 1 | Active-low reset |
+| --- | --- | ---: | --- |
+| `clk_i` | Input | 1 | Mixer core, stream, and APB clock. |
+| `rst_n_i` | Input | 1 | Active-low reset; asynchronous assertion and synchronous deassertion to `clk_i`. |
 
-### 5.3 Input stream interface
+The baseline IP is single-clock. If APB, producer, or consumer logic uses another clock, CDC shall be implemented outside this IP.
 
-| Signal | Direction | Width | Description |
-|---|---:|---:|---|
-| `merge_rx_valid` | Input | `CHANNEL_NUM_MAX` | Per-channel input valid |
-| `merge_rx_ready` | Output | `CHANNEL_NUM_MAX` | Per-channel input ready |
-| `merge_rx_data` | Input | `CHANNEL_NUM_MAX × 32` | Per-channel input sample |
-
-Transfer condition for channel `i`:
-
-```systemverilog
-rx_fire[i] = rx_valid[i] && rx_ready[i];
-```
-
-The physical input index identifies the channel.
-
-### 5.4 Output stream toward crossbar
+### 7.2 Audio input streams
 
 | Signal | Direction | Width | Description |
-|---|---:|---:|---|
-| `merge_tx_valid` | Output | 1 | Mixd sample valid |
-| `merge_tx_ready` | Input | 1 | Crossbar accepts output sample |
-| `merge_tx_data` | Output | 32 | Mixd sample data |
+| --- | --- | ---: | --- |
+| `input_valid_i` | Input | `NUM_INPUTS` | Per-input sample-valid vector. |
+| `input_ready_o` | Output | `NUM_INPUTS` | Per-input sample-ready vector. |
+| `input_data_i` | Input | `NUM_INPUTS × DATA_WIDTH` | Signed PCM samples, one packed element per input. |
 
-## 6 Register Description
+### 7.3 Audio output streams
 
-### 6.1 Mix Enable Register
-| Sigal | Width | Description |
-|---|---:|---|
-| `cfg_merge_en` | 1 | Enable merge operation |
-| `cfg_merge_rxen` | 8 | Each bit controls the enable signal of each merge recieve channel respectively, for example:
-                        8'b0000_0001 enables channel 1
-                        8'b0000_0100 enables channel 3
-                        8'b0000_0101 enables channel 1 and channel 3 |
-| `cfg_merge_txen` | 1 | Enable merge tx channel |
+| Signal | Direction | Width | Description |
+| --- | --- | ---: | --- |
+| `output_valid_o` | Output | `NUM_OUTPUTS` | Per-output result-valid vector. |
+| `output_ready_i` | Input | `NUM_OUTPUTS` | Per-output result-ready vector. |
+| `output_data_o` | Output | `NUM_OUTPUTS × DATA_WIDTH` | Signed mixed PCM result for each output. |
 
-### 6.2 TX Channel 0 Mix Format Register
-| Sigal | Width | Description |
-|---|---:|---|
-| `cfg_tx_0_channel_src_sel` | 8 | Select rx source FIFO for channel 0 output stream |
-| `cfg_tx_0_slot_0` | 3 | Select which input channel data will be put in slot_0 of each frame |
-| `cfg_tx_0_slot_1` | 3 | Select which input channel data will be put in slot_1 of each frame |
-| `cfg_tx_0_slot_2` | 3 | Select which input channel data will be put in slot_2 of each frame |
-| `cfg_tx_0_slot_3` | 3 | Select which input channel data will be put in slot_3 of each frame |
-| `cfg_tx_0_slot_4` | 3 | Select which input channel data will be put in slot_4 of each frame |
-| `cfg_tx_0_slot_5` | 3 | Select which input channel data will be put in slot_5 of each frame |
-| `cfg_tx_0_slot_6` | 3 | Select which input channel data will be put in slot_6 of each frame |
-| `cfg_tx_0_slot_7` | 3 | Select which input channel data will be put in slot_7 of each frame |
+### 7.5 Interrupt
 
-The output order of channel 0 is as follows, assume all 8 inptut rx channels are selected to be merged and output through tx channel 0:
-
-```text
-Mixd output:
-| slot_0, slot_1, slot_2, slot_3, slot_4, slot_5, slot_6, slot_7, | slot_0, slot_1, slot_2, slot_3, slot_4, slot_5, slot_6, slot_7 ...
-|                                                                 |  
-Frame 1                                                           Frame 2
-```
-### 6.3 TX Channel 1 Mix Format Register
-| Sigal | Width | Description |
-|---|---:|---|
-| `cfg_tx_1_channel_src_sel` | 8 | Select rx source FIFO for channel 0 output stream |
-| `cfg_tx_1_slot_0` | 3 | Select which input channel data will be put in slot_0 of each frame |
-| `cfg_tx_1_slot_1` | 3 | Select which input channel data will be put in slot_1 of each frame |
-| `cfg_tx_1_slot_2` | 3 | Select which input channel data will be put in slot_2 of each frame |
-| `cfg_tx_1_slot_3` | 3 | Select which input channel data will be put in slot_3 of each frame |
-| `cfg_tx_1_slot_4` | 3 | Select which input channel data will be put in slot_4 of each frame |
-| `cfg_tx_1_slot_5` | 3 | Select which input channel data will be put in slot_5 of each frame |
-| `cfg_tx_1_slot_6` | 3 | Select which input channel data will be put in slot_6 of each frame |
-| `cfg_tx_1_slot_7` | 3 | Select which input channel data will be put in slot_7 of each frame |
-
-### 6.4 TX Channel 2 Mix Format Register
-| Sigal | Width | Description |
-|---|---:|---|
-| `cfg_tx_2_channel_src_sel` | 8 | Select rx source FIFO for channel 0 output stream |
-| `cfg_tx_2_slot_0` | 3 | Select which input channel data will be put in slot_0 of each frame |
-| `cfg_tx_2_slot_1` | 3 | Select which input channel data will be put in slot_1 of each frame |
-| `cfg_tx_2_slot_2` | 3 | Select which input channel data will be put in slot_2 of each frame |
-| `cfg_tx_2_slot_3` | 3 | Select which input channel data will be put in slot_3 of each frame |
-| `cfg_tx_2_slot_4` | 3 | Select which input channel data will be put in slot_4 of each frame |
-| `cfg_tx_2_slot_5` | 3 | Select which input channel data will be put in slot_5 of each frame |
-| `cfg_tx_2_slot_6` | 3 | Select which input channel data will be put in slot_6 of each frame |
-| `cfg_tx_2_slot_7` | 3 | Select which input channel data will be put in slot_7 of each frame |
-
-### 6.5 TX Channel 3 Mix Format Register
-| Sigal | Width | Description |
-|---|---:|---|
-| `cfg_tx_3_channel_src_sel` | 8 | Select rx source FIFO for channel 0 output stream |
-| `cfg_tx_3_slot_0` | 3 | Select which input channel data will be put in slot_0 of each frame |
-| `cfg_tx_3_slot_1` | 3 | Select which input channel data will be put in slot_1 of each frame |
-| `cfg_tx_3_slot_2` | 3 | Select which input channel data will be put in slot_2 of each frame |
-| `cfg_tx_3_slot_3` | 3 | Select which input channel data will be put in slot_3 of each frame |
-| `cfg_tx_3_slot_4` | 3 | Select which input channel data will be put in slot_4 of each frame |
-| `cfg_tx_3_slot_5` | 3 | Select which input channel data will be put in slot_5 of each frame |
-| `cfg_tx_3_slot_6` | 3 | Select which input channel data will be put in slot_6 of each frame |
-| `cfg_tx_3_slot_7` | 3 | Select which input channel data will be put in slot_7 of each frame |
-
-### 6.6 TX Channel Frame Setting Register
-| Sigal | Width | Description |
-|---|---:|---|
-| `cfg_tx_0_frame_num` | 3 | Select tx channel 0 merged rx frame number |
-| `cfg_tx_1_frame_num` | 3 | Select tx channel 1 merged rx frame number |
-| `cfg_tx_2_frame_num` | 3 | Select tx channel 2 merged rx frame number |
-| `cfg_tx_3_frame_num` | 3 | Select tx channel 3 merged rx frame number |
-
-### 6.7 Tx Channel Slot Setting Register
-| Sigal | Width | Description |
-|---|---:|---|
-| `cfg_tx_0_slot_size` | 3 | Select tx channel 0 slot size: 0 8bits, 1 16bits, 2 24bits, 3 32bits |
-| `cfg_tx_1_slot_size` | 3 | Select tx channel 1 slot size: 0 8bits, 1 16bits, 2 24bits, 3 32bits |
-| `cfg_tx_2_slot_size` | 3 | Select tx channel 2 slot size: 0 8bits, 1 16bits, 2 24bits, 3 32bits |
-| `cfg_tx_3_slot_size` | 3 | Select tx channel 3 slot size: 0 8bits, 1 16bits, 2 24bits, 3 32bits |
-
-### 6.8 RX FIFO Flush Register 
-| Sigal | Width | Description |
-|---|---:|---|
-| `cfg_rx_fifo_flush` | 8 | Each bit provides rx flush signal of each rx channel respectively |
-| `RESERVE` | 24 | Reserved |
+| Signal | Direction | Width | Description |
+| --- | --- | ---: | --- |
+| `irq_o` | Output | 1 | Level interrupt: OR of enabled sticky interrupt status bits. |
 
 ---
 
-## 7. FSM Design
+## 8. Register Map
 
+Derived parameters:
 
 ```text
-                         +---------+
-                         |  IDLE   |
-                         +----+----+
-                              |
-                              | Mix Enable && TX channel enable
-                              v
-                     +--------+---------+
-                     |                  |
-                     |   WAIT_FRAME     |
-                     |                  |
-                     | TX slot_0 from   |
-                     | RX FIFO ready ?  |
-                     +--------+---------+
-                              |
-                              | Yes
-                              v
-                     +--------+---------+
-                     |                  |
-                     |  WRITE_FRAME     |
-                     |                  |
-                     | Write one slot   |
-                     | into TX FIFO     |
-                     +--------+---------+
-                              |
-                  Last slot ? |
-                     No       | Yes
-                      |       |
-                      +-------+
-                              |
-                              v
-                        WAIT_FRAME
+For loseless summation data:
+ACC_WIDTH = DATA_WIDTH + ceil(log2(8))
+          = DATA_WIDTH + 3
 ```
 
-# 8. Future Design Discussion 
-The IP does not append `slot_id`, `slot_valid`, or frame metadata to the stream.
+### 8.1 Register summary
 
+| Offset | Name | Access | Reset | Description |
+| ---: | --- | --- | ---: | --- |
+| `0x008` | `CTRL` | RW/WO | `0x00000000` | Enable, flush, soft reset, commit, counter clear. |
+| `0x00C` | `STATUS` | RO | `0x00000002` | Runtime state summary. |
+| `0x010` | `INPUT_ENABLE` | RW-S | `0x00000000` | Shadow input enable mask. |
+| `0x014` | `OUTPUT_ENABLE` | RW-S | `0x00000000` | Shadow output enable mask. |
+| `0x018` | `OUT0_MATRIX` | RW-S | `0x00000000` | Shadow source mask for output 0. |
+| `0x01C` | `OUT1_MATRIX` | RW-S | `0x00000000` | Shadow source mask for output 1. |
+| `0x020` | `OUT2_MATRIX` | RW-S | `0x00000000` | Shadow source mask for output 2. |
+| `0x024` | `OUT3_MATRIX` | RW-S | `0x00000000` | Shadow source mask for output 3. |
+| `0x028` | `SAT_CTRL` | RW-S | `0x00000001` | Shadow saturation control. |
+| `0x02C` | `CFG_STATUS` | RO | `0x00000000` | Commit sequence and configuration validity. |
+| `0x030` | `IRQ_ENABLE` | RW | `0x00000000` | Interrupt enable mask. |
+| `0x034` | `IRQ_STATUS` | W1C/RO | `0x00000000` | Maskable sticky interrupt status. |
+| `0x038` | `ERROR_STATUS` | W1C/RO | `0x00000000` | Sticky configuration error detail. |
+| `0x03C` | `STARVE_STATUS` | RO | `0x00000000` | Required empty-input indication. |
+| `0x040` | `BLOCK_STATUS` | RO | `0x00000000` | Enabled full-output indication. |
+| `0x044` | `IN_FIFO_EMPTY` | RO | implementation | Input FIFO empty bits. |
+| `0x048` | `IN_FIFO_FULL` | RO | `0x00000000` | Input FIFO full bits. |
+| `0x04C` | `OUT_FIFO_EMPTY` | RO | implementation | Output FIFO empty bits. |
+| `0x050` | `OUT_FIFO_FULL` | RO | `0x00000000` | Output FIFO full bits. |
+| `0x060`–`0x07C` | `IN_FIFO_LEVEL0`–`7` | RO | `0x0` | Per-input FIFO occupancy. |
+| `0x080`–`0x08C` | `OUT_FIFO_LEVEL0`–`3` | RO | `0x0` | Per-output FIFO occupancy. |
+| `0x08.` | `MIX_COUNT_LO` | RO | `0x00000000` | Mixing-slot counter bits `[31:0]`. |
+| `0x08.` | `MIX_COUNT_HI` | RO | `0x00000000` | Mixing-slot counter bits `[63:32]`. |
+| `0x08.`–`0x0A4` | `SAT_COUNT0`–`3` | RO | `0x00000000` | Per-output saturating overflow counters. |
+| `0x0B0` | `ACTIVE_INPUT_ENABLE` | RO | `0x00000000` | Active input enable mask. |
+| `0x0B4` | `ACTIVE_OUTPUT_ENABLE` | RO | `0x00000000` | Active output enable mask. |
+| `0x0B8`–`0x0C4` | `ACTIVE_OUT0_MATRIX`–`3` | RO | `0x00000000` | Active matrix rows. |
+| `0x0C8` | `ACTIVE_SAT_CTRL` | RO | `0x00000001` | Active saturation control. |
+| `0x0FC` | `SCRATCH` | RW | `0x00000000` | Software scratch register. |
+
+`RW-S` denotes a shadow register. The value affects the datapath only after a successful `CFG_COMMIT`.
+
+### 8.2 `CTRL` — offset `0x008`
+
+| Bits | Name | Access | Reset | Description |
+| ---: | --- | --- | ---: | --- |
+| `[0]` | `MIXER_EN` | RW | 0 | Enable starting new mixing slots. |
+| `[1]` | `FLUSH` | WO | 0 | Write 1 to flush pipeline and all FIFOs; self-clearing. |
+| `[2]` | `SOFT_RESET` | WO | 0 | Write 1 for internal reset; self-clearing. |
+| `[3]` | `COUNTER_CLEAR` | WO | 0 | Write 1 to clear slot and saturation counters. |
+| `[31:5]` | Reserved | — | 0 | Write zero; read zero. |
+
+### 8.3 `STATUS` — offset `0x00C`
+
+| Bits | Name | Description |
+| ---: | --- | --- |
+| `[0]` | `ACTIVE` | `EN=1`, active configuration valid, and at least one output enabled. |
+| `[1]` | `IDLE` | No arithmetic slot is in flight. Output FIFOs may still contain data. |
+| `[2]` | `PIPE_BUSY` | Datapath is processing a captured slot. |
+| `[3]` | `CFG_PENDING` | A valid commit request is waiting for the next slot boundary. |
+| `[4]` | `FLUSH_BUSY` | FIFO and pipeline flush is in progress. |
+| `[5]` | `INPUT_STARVED` | At least one required input FIFO is empty. |
+| `[6]` | `OUTPUT_BLOCKED` | At least one enabled output FIFO is full. |
+| `[7:11]` | `FSM_STATE` | Encoded internal state for debug. |
+| `[31:12]` | Reserved | Read zero. |
+
+### 8.4 Enable and matrix registers
+
+#### `INPUT_ENABLE` — offset `0x010`
+
+| Bits | Description |
+| ---: | --- |
+| `[7:0]` | One bit per input; 1 permits that input to participate. |
+| `[31:8]` | Reserved. |
+
+#### `OUTPUT_ENABLE` — offset `0x014`
+
+| Bits | Description |
+| ---: | --- |
+| `[3:0]` | One bit per output; 1 generates an output result for each slot. |
+| `[31:4]` | Reserved. |
+
+#### `OUTn_MATRIX` — offsets `0x018` to `0x024`
+
+| Bits | Description |
+| ---: | --- |
+| `[7:0]` | `bit i = 1` selects input `i` into output `n`. |
+| `[31:8]` | Reserved. |
+
+An enabled output whose effective matrix row is zero causes the commit to fail with `CFG_ZERO_SOURCE`.
+
+### 8.5 `SAT_CTRL` — offset `0x028`
+
+| Bits | Name | Access | Reset | Description |
+| ---: | --- | --- | ---: | --- |
+| `[0]` | `SAT_EN` | RW-S | 1 | 1: clamp on overflow; 0: two's-complement wrap. |
+| `[31:1]` | Reserved | — | 0 | Write zero; read zero. |
+
+### 8.6 `CFG_STATUS` — offset `0x02C`
+
+| Bits | Name | Description |
+| ---: | --- | --- |
+| `[0]` | `SHADOW_DIRTY` | A shadow register changed after the last successful commit. |
+| `[1]` | `COMMIT_PENDING` | Commit accepted and waiting for a safe slot boundary. |
+| `[2]` | `ACTIVE_VALID` | Current active configuration is valid. |
+| `[3]` | `LAST_COMMIT_OK` | Last completed commit succeeded. Cleared by a new commit request. |
+| `[15:8]` | `CFG_SEQ` | Increments after each successful commit. Wraps naturally. |
+| `[31:16]` | Reserved | Read zero. |
+
+### 8.7 Interrupt registers
+
+`IRQ_ENABLE` and `IRQ_STATUS` use the same bit assignments:
+
+| Bit | Name | Set condition |
+| ---: | --- | --- |
+| 0 | `SAT_OUT0` | Output 0 full-precision sum exceeded the output range. |
+| 1 | `SAT_OUT1` | Output 1 full-precision sum exceeded the output range. |
+| 2 | `SAT_OUT2` | Output 2 full-precision sum exceeded the output range. |
+| 3 | `SAT_OUT3` | Output 3 full-precision sum exceeded the output range. |
+| 4 | `INPUT_STARVE` | Scheduler first enters a wait caused by a required empty input. |
+| 5 | `OUTPUT_BLOCKED` | Scheduler first enters a wait caused by an enabled full output FIFO. |
+| 6 | `CFG_DONE` | Shadow configuration was successfully activated. |
+| 7 | `CFG_ERROR` | Configuration commit was rejected. |
+| 8 | `FLUSH_DONE` | Requested flush completed. |
+| 31:8.| Reserved | Read zero. |
+
+`IRQ_STATUS` bits are sticky and cleared by writing 1. Saturation status is set even when wrap mode is selected.
+
+### 8.8 `ERROR_STATUS` — offset `0x038`
+
+| Bit | Name | Meaning |
+| ---: | --- | --- |
+| 0 | `CFG_ZERO_SOURCE` | At least one enabled output has no effective selected input. |
+| 1 | `CFG_INVALID_SEL` | Configuration selected an unimplemented input or output. |
+| 2 | `CFG_BUSY` | A commit was requested while another commit was pending. |
+| 3 | `CFG_RESERVED` | A reserved configuration bit was written as 1. |
+| 31:4 | Reserved | Read zero. |
+
+Errors are sticky W1C. A failed commit does not alter the active configuration.
+
+### 8.8.FIFO status
+
+- `STARVE_STATUS[7:0]`: bit `i` is 1 when input `i` is required and its FIFO is empty.
+- `BLOCK_STATUS[3:0]`: bit `o` is 1 when output `o` is enabled and its FIFO is full.
+- FIFO empty/full registers contain one bit per implemented FIFO.
+- Each FIFO-level register reports occupancy from zero through the configured depth.
+
+### 8.10 Counters
+
+- `MIX_COUNT` increments once when one slot is atomically enqueued.
+- `SAT_COUNTn` increments for every overflowing slot on output `n`, regardless of saturation mode.
+- Saturation counters stop at `0xFFFF_FFFF` rather than wrapping.
+- `CTRL.COUNTER_CLEAR` clears all counters atomically.
+- Software should read `MIX_COUNT_HI`, then `MIX_COUNT_LO`, then `MIX_COUNT_HI` again and retry if the high word changed.
+
+---
