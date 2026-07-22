@@ -18,7 +18,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="F9P4_Q8i71CQrRzi8wBo-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="WAIT_FRAME" vertex="1">
+        <mxCell id="F9P4_Q8i71CQrRzi8wBo-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="WAIT_INPUT" vertex="1">
           <mxGeometry height="60" width="120" x="330" y="210" as="geometry" />
         </mxCell>
         <mxCell id="F9P4_Q8i71CQrRzi8wBo-5" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" value="">
@@ -27,19 +27,19 @@
             <mxPoint x="389.58" y="360" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="F9P4_Q8i71CQrRzi8wBo-6" connectable="0" parent="F9P4_Q8i71CQrRzi8wBo-5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="slot0 rx_fifo_channel_level &amp;gt; 0&amp;nbsp;" vertex="1">
+        <mxCell id="F9P4_Q8i71CQrRzi8wBo-6" connectable="0" parent="F9P4_Q8i71CQrRzi8wBo-5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="tx_slot_source: rx_fifo_channel_level &amp;gt; 0&amp;nbsp;" vertex="1">
           <mxGeometry relative="1" x="-0.163" y="-2" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="F9P4_Q8i71CQrRzi8wBo-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="WRITE_FRAM" vertex="1">
+        <mxCell id="F9P4_Q8i71CQrRzi8wBo-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="LOAD_FRAME" vertex="1">
           <mxGeometry height="60" width="120" x="330" y="360" as="geometry" />
         </mxCell>
         <mxCell id="F9P4_Q8i71CQrRzi8wBo-8" edge="1" parent="1" source="F9P4_Q8i71CQrRzi8wBo-7" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" target="F9P4_Q8i71CQrRzi8wBo-4" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <Array as="points">
-              <mxPoint x="540" y="390" />
-              <mxPoint x="540" y="240" />
+              <mxPoint x="620" y="390" />
+              <mxPoint x="620" y="240" />
             </Array>
             <mxPoint x="490" y="400" as="sourcePoint" />
             <mxPoint x="540" y="350" as="targetPoint" />
@@ -61,8 +61,11 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="6jK4qZs0-pzn6i_ATSWB-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="slot_cnt = 0&lt;div&gt;init_tx_fifo&lt;/div&gt;" vertex="1">
-          <mxGeometry height="60" width="120" x="130" y="60" as="geometry" />
+        <mxCell id="6jK4qZs0-pzn6i_ATSWB-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="slot_cnt = 0&lt;div&gt;init_tx_fifo&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="110" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6jK4qZs0-pzn6i_ATSWB-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="slot_cnt = 0&lt;div&gt;init_tx_fifo&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="110" y="210" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
