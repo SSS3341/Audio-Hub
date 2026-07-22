@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="XjHAFqP7SQ1ti1ibUdli">
-    <mxGraphModel dx="595" dy="336" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1422" dy="336" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -27,7 +27,7 @@
             <mxPoint x="389.58" y="360" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="F9P4_Q8i71CQrRzi8wBo-6" connectable="0" parent="F9P4_Q8i71CQrRzi8wBo-5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="tx_slot_source: rx_fifo_channel_level &amp;gt; 0&amp;nbsp;" vertex="1">
+        <mxCell id="F9P4_Q8i71CQrRzi8wBo-6" connectable="0" parent="F9P4_Q8i71CQrRzi8wBo-5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="tx_slot_0_source: rx_fifo_channel_level &amp;gt; 0&amp;nbsp;" vertex="1">
           <mxGeometry relative="1" x="-0.163" y="-2" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
@@ -64,8 +64,8 @@
         <mxCell id="6jK4qZs0-pzn6i_ATSWB-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="slot_cnt = 0&lt;div&gt;init_tx_fifo&lt;/div&gt;" vertex="1">
           <mxGeometry height="60" width="120" x="110" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="6jK4qZs0-pzn6i_ATSWB-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="slot_cnt = 0&lt;div&gt;init_tx_fifo&lt;/div&gt;" vertex="1">
-          <mxGeometry height="60" width="120" x="110" y="210" as="geometry" />
+        <mxCell id="6jK4qZs0-pzn6i_ATSWB-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="rx_source_fifo_idle_cnt = 0&lt;div&gt;frame_cnt = 0&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="270" x="-40" y="210" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
