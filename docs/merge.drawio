@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="XjHAFqP7SQ1ti1ibUdli">
-    <mxGraphModel dx="1687" dy="486" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1500" dy="380" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -64,7 +64,7 @@
         <mxCell id="6jK4qZs0-pzn6i_ATSWB-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="slot_cnt = 0&lt;div&gt;init_tx_fifo&lt;/div&gt;" vertex="1">
           <mxGeometry height="60" width="120" x="110" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="6jK4qZs0-pzn6i_ATSWB-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="rx_source_fifo_idle_cnt = 0&lt;div&gt;frame_cnt = 0&lt;/div&gt;&lt;div&gt;clk_gate_on&lt;/div&gt;" vertex="1">
+        <mxCell id="6jK4qZs0-pzn6i_ATSWB-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="rx_source_fifo_idle_cnt = 0&lt;div&gt;frame_cnt = 0&lt;/div&gt;" vertex="1">
           <mxGeometry height="60" width="270" x="-40" y="210" as="geometry" />
         </mxCell>
         <mxCell id="6jK4qZs0-pzn6i_ATSWB-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="FRAME_DONE" vertex="1">
