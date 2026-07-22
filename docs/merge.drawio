@@ -61,6 +61,9 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
+        <mxCell id="6jK4qZs0-pzn6i_ATSWB-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="slot_cnt = 0&lt;div&gt;init_tx_fifo&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="130" y="60" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
