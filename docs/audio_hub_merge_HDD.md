@@ -6,31 +6,69 @@
 
 ## 1. Overview
 
-The Channel Merge IP supports merge up to 16 independent input rx audio streams into 4 output streams, each output stream can be merged of any combination of the 16 intput streams. Software needs to config corresponding registers to choose the merge style of each output tx channel.
+The Channel Merge IP supports merge up to 16 independent input rx audio streams into 4 output streams, each output stream can be merged of any combination of the 16 intput streams. Software needs to config corresponding registers to choose the merge style of each output tx channel. The Merge IP supports 3 output data packing formants for each tx channel:
 
-Each input channel is carried on an independent `valid/ready/data` interface. The input port number identifies the source channel. The output remains 32 bits wide and carries one sample per successful transfer(i.e per valid/ready handshake). Output slot identity is therefore represented implicitly by the transfer order.
+-Frame interleave
+-Block interleave
+-Planar
 
+For Frame interleave mode, the output modes are like:
+```text
 For example, for two input streams:
 
-```text
 Input stream 0: A0, A1, A2, A3, ...
 Input stream 1: B0, B1, B2, B3, ...
-
 Merged output stream:
 A0, B0, A1, B1, A2, B2, A3, B3, ...
-```
 
 For four input streams:
-
-```text
 Input stream 0: A0, A1, A2, A3, ...
 Input stream 1: B0, B1, B2, B3, ...
 Input stream 2: C0, C1, C2, C3, ...
 Input stream 3: D0, D1, D2, D3, ...
-
 Merged output stream:
 A0, B0, C0, D0, A1, B1, C1, D1, A2, B2, C2, D2, A3, B3, C3, D3 ...
 ```
+
+For Block interleave mode, the output modes are like:
+```text
+For example, for two input streams, the block_size is configured as 2:
+
+Input stream 0: A0, A1, A2, A3, ...
+Input stream 1: B0, B1, B2, B3, ...
+Merged output stream:
+A0, A1, B0, B1, A2, A3, B2, B3, ...
+
+For four input streams:
+Input stream 0: A0, A1, A2, A3, ...
+Input stream 1: B0, B1, B2, B3, ...
+Input stream 2: C0, C1, C2, C3, ...
+Input stream 3: D0, D1, D2, D3, ...
+Merged output stream:
+A0, A1, B0, B1, C0, C1, D0, D1, A2, A3, B2, B3, C2, C3, D2, D3 ...
+```
+
+For Planar mode, the output modes are like:
+```text
+For example, for two input streams each has 4 slots in one frame :
+
+Input stream 0: A0, A1, A2, A3, ...
+Input stream 1: B0, B1, B2, B3, ...
+Merged output stream:
+A0, A1, A2, A3, B0, B1, B2, B3, ...
+
+For four input streams:
+Input stream 0: A0, A1, A2, A3, ...
+Input stream 1: B0, B1, B2, B3, ...
+Input stream 2: C0, C1, C2, C3, ...
+Input stream 3: D0, D1, D2, D3, ...
+Merged output stream:
+A0, A1, A2, A3, B0, B1, B2, B3, C0, C1, C2, C3, D0, D1, D2, D3 ...
+```
+
+
+Each input channel is carried on an independent `valid/ready/data` interface. The input port number identifies the source channel. The output remains 32 bits wide and carries one sample per successful transfer(i.e per valid/ready handshake). Output slot identity is therefore represented implicitly by the transfer order.
+
 
 The slot index of output stream is inferred by a handshake-driven slot counter. The slot counter increments only when `tx_valid && tx_ready`.
 
@@ -53,6 +91,7 @@ The slot index of output stream is inferred by a handshake-driven slot counter. 
 | 10 | Detect rx/tx FIFO overflow, underflow, and input stream waiting overtime |
 | 11 | Support safe flush, disable, and reconfiguration |
 | 12 | Support software configurable output frame format |
+| 13 | Support software configurable 3 modes output frame format |
 
 
 ---
@@ -198,6 +237,9 @@ The physical input index identifies the channel.
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_0_channel_src_sel` | 16 | Select rx source FIFO for channel 0 output stream |
+| `cfg_tx_0_channel_frame_style` | 2 | Select tx channel output frame mode, 0: frame-interleave<br>1: block_interleave<br>2:planar mode |
+| `cfg_tx_0_channel_block_size` | 5 | Select tx channel output frame interleaved block size, from 2 to 32 slots. For example: if configured 2, the interleave granularity is 2 slots for each input channel |
+| `cfg_tx_0_channel_planar_len` | 5 | Select tx channel merged input channel frame size, from 2 to 32 slots. For example: if configured 2, the merged input frame slots is 2 slots |
 | `cfg_tx_0_channel_frame_size` | 5 | Select the tx channel 0 frame size, i.e. cfg_tx_0_channel_frame_size + 1 slots inside each frame: 0x0: 1 slot in a output frame; 0x1: 2 slots in a output frame...<br>0x1f: 32 slots(max slot number of one frame)  |
 | `cfg_tx_0_channel_slot_size` | 2 | Select the tx channel 0 slot size, i.e. 0: 8 bits, 1: 16 bits, 2: 24 bits, 3: 32 bits |
 
@@ -266,7 +308,17 @@ Merged output:
 |                                                                 |  
 Frame 1                                                           Frame 2
 ```
-### 6.8 TX Channel 1 Frame Enable Register
+### 6.8 TX Channel 1 Merge Format Register
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_1_channel_src_sel` | 16 | Select rx source FIFO for channel 1 output stream |
+| `cfg_tx_1_channel_frame_style` | 2 | Select tx channel output frame mode, 0: frame-interleave<br>1: block_interleave<br>2:planar mode |
+| `cfg_tx_1_channel_block_size` | 5 | Select tx channel output frame interleaved block size, from 2 to 32 slots. For example: if configured 2, the interleave granularity is 2 slots for each input channel |
+| `cfg_tx_1_channel_planar_len` | 5 | Select tx channel merged input channel frame size, from 2 to 32 slots. For example: if configured 2, the merged input frame slots is 2 slots |
+| `cfg_tx_1_channel_frame_size` | 5 | Select the tx channel 1 frame size, i.e. cfg_tx_1_channel_frame_size + 1 slots inside each frame: 0x0: 1 slot in a output frame; 0x1: 2 slots in a output frame...<br>0x1f: 32 slots(max slot number of one frame)  |
+| `cfg_tx_1_channel_slot_size` | 2 | Select the tx channel 1 slot size, i.e. 0: 8 bits, 1: 16 bits, 2: 24 bits, 3: 32 bits |
+
+### 6.9 TX Channel 1 Frame Enable Register
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_0_channel_frame_enable` | 32 | Select slots that are enabled inside one frame for tx Channel 1 output stream, for example: 
@@ -274,7 +326,7 @@ Frame 1                                                           Frame 2
 32'b0000_0000_0000_0111: enable slot0, slot1, slot2 inside one frame
 Setting bit N to enable slot N inside one frame, tx channel frame enable needs to be consecutive|
 
-### 6.9 TX Channel 1 Frame Format 0 Regeister 
+### 6.10 TX Channel 1 Frame Format 0 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_1_slot_0` | 4 | Select which input channel data will be put in slot_0 of each frame |
@@ -287,7 +339,7 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 | `cfg_tx_1_slot_7` | 4 | Select which input channel data will be put in slot_7 of each frame |
 
 
-### 6.10 TX Channel 1 Frame Format 1 Regeister 
+### 6.11 TX Channel 1 Frame Format 1 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_1_slot_8` | 4 | Select which input channel data will be put in slot_8 of each frame |
@@ -299,7 +351,7 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 | `cfg_tx_1_slot_14` | 3 | Select which input channel data will be put in slot_14 of each frame |
 | `cfg_tx_1_slot_15` | 3 | Select which input channel data will be put in slot_15 of each frame |
 
-### 6.11 TX Channel 1 Frame Format 2 Regeister 
+### 6.12 TX Channel 1 Frame Format 2 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_1_slot_16` | 4 | Select which input channel data will be put in slot_16 of each frame |
@@ -311,7 +363,7 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 | `cfg_tx_1_slot_22` | 3 | Select which input channel data will be put in slot_22 of each frame |
 | `cfg_tx_1_slot_23` | 3 | Select which input channel data will be put in slot_23 of each frame |
 
-### 6.12 TX Channel 1 Frame Format 3 Regeister 
+### 6.13 TX Channel 1 Frame Format 3 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_1_slot_24` | 4 | Select which input channel data will be put in slot_24 of each frame |
@@ -323,7 +375,17 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 | `cfg_tx_1_slot_30` | 3 | Select which input channel data will be put in slot_30 of each frame |
 | `cfg_tx_1_slot_31` | 3 | Select which input channel data will be put in slot_31 of each frame |
 
-### 6.13 TX Channel 2 Frame Enable Register
+### 6.14 TX Channel 2 Merge Format Register
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_2_channel_src_sel` | 16 | Select rx source FIFO for channel 2 output stream |
+| `cfg_tx_2_channel_frame_style` | 2 | Select tx channel output frame mode, 0: frame-interleave<br>1: block_interleave<br>2:planar mode |
+| `cfg_tx_2_channel_block_size` | 5 | Select tx channel output frame interleaved block size, from 2 to 32 slots. For example: if configured 2, the interleave granularity is 2 slots for each input channel |
+| `cfg_tx_2_channel_planar_len` | 5 | Select tx channel merged input channel frame size, from 2 to 32 slots. For example: if configured 2, the merged input frame slots is 2 slots |
+| `cfg_tx_2_channel_frame_size` | 5 | Select the tx channel 2 frame size, i.e. cfg_tx_2_channel_frame_size + 1 slots inside each frame: 0x0: 1 slot in a output frame; 0x1: 2 slots in a output frame...<br>0x1f: 32 slots(max slot number of one frame)  |
+| `cfg_tx_2_channel_slot_size` | 2 | Select the tx channel 2 slot size, i.e. 0: 8 bits, 1: 16 bits, 2: 24 bits, 3: 32 bits |
+
+### 6.15 TX Channel 2 Frame Enable Register
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_0_channel_frame_enable` | 32 | Select slots that are enabled inside one frame for tx Channel 2 output stream, for example: 
@@ -331,7 +393,7 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 32'b0000_0000_0000_0111: enable slot0, slot1, slot2 inside one frame
 Setting bit N to enable slot N inside one frame, tx channel frame enable needs to be consecutive|
 
-### 6.14 TX Channel 2 Frame Format 0 Regeister 
+### 6.16 TX Channel 2 Frame Format 0 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_1_slot_0` | 4 | Select which input channel data will be put in slot_0 of each frame |
@@ -344,7 +406,7 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 | `cfg_tx_1_slot_7` | 4 | Select which input channel data will be put in slot_7 of each frame |
 
 
-### 6.15 TX Channel 2 Frame Format 1 Regeister 
+### 6.17 TX Channel 2 Frame Format 1 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_1_slot_8` | 4 | Select which input channel data will be put in slot_8 of each frame |
@@ -356,7 +418,7 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 | `cfg_tx_1_slot_14` | 3 | Select which input channel data will be put in slot_14 of each frame |
 | `cfg_tx_1_slot_15` | 3 | Select which input channel data will be put in slot_15 of each frame |
 
-### 6.16 TX Channel 2 Frame Format 2 Regeister 
+### 6.18 TX Channel 2 Frame Format 2 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_1_slot_16` | 4 | Select which input channel data will be put in slot_16 of each frame |
@@ -368,7 +430,7 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 | `cfg_tx_1_slot_22` | 3 | Select which input channel data will be put in slot_22 of each frame |
 | `cfg_tx_1_slot_23` | 3 | Select which input channel data will be put in slot_23 of each frame |
 
-### 6.17 TX Channel 2 Frame Format 3 Regeister 
+### 6.19 TX Channel 2 Frame Format 3 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_1_slot_24` | 4 | Select which input channel data will be put in slot_24 of each frame |
@@ -380,7 +442,17 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 | `cfg_tx_1_slot_30` | 3 | Select which input channel data will be put in slot_30 of each frame |
 | `cfg_tx_1_slot_31` | 3 | Select which input channel data will be put in slot_31 of each frame |
 
-### 6.18 TX Channel 3 Frame Enable Register
+### 6.20 TX Channel 3 Merge Format Register
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_tx_3_channel_src_sel` | 16 | Select rx source FIFO for channel 3 output stream |
+| `cfg_tx_3_channel_frame_style` | 2 | Select tx channel output frame mode, 0: frame-interleave<br>1: block_interleave<br>2:planar mode |
+| `cfg_tx_3_channel_block_size` | 5 | Select tx channel output frame interleaved block size, from 2 to 32 slots. For example: if configured 2, the interleave granularity is 2 slots for each input channel |
+| `cfg_tx_3_channel_planar_len` | 5 | Select tx channel merged input channel frame size, from 2 to 32 slots. For example: if configured 2, the merged input frame slots is 2 slots |
+| `cfg_tx_3_channel_frame_size` | 5 | Select the tx channel 3 frame size, i.e. cfg_tx_3_channel_frame_size + 1 slots inside each frame: 0x0: 1 slot in a output frame; 0x1: 2 slots in a output frame...<br>0x1f: 32 slots(max slot number of one frame)  |
+| `cfg_tx_3_channel_slot_size` | 2 | Select the tx channel 3 slot size, i.e. 0: 8 bits, 1: 16 bits, 2: 24 bits, 3: 32 bits |
+
+### 6.21 TX Channel 3 Frame Enable Register
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_0_channel_frame_enable` | 32 | Select slots that are enabled inside one frame for tx Channel 3 output stream, for example: 
@@ -388,7 +460,7 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 32'b0000_0000_0000_0111: enable slot0, slot1, slot2 inside one frame
 Setting bit N to enable slot N inside one frame, tx channel frame enable needs to be consecutive|
 
-### 6.19 TX Channel 3 Frame Format 0 Regeister 
+### 6.22 TX Channel 3 Frame Format 0 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_1_slot_0` | 4 | Select which input channel data will be put in slot_0 of each frame |
@@ -401,7 +473,7 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 | `cfg_tx_1_slot_7` | 4 | Select which input channel data will be put in slot_7 of each frame |
 
 
-### 6.20 TX Channel 3 Frame Format 1 Regeister 
+### 6.23 TX Channel 3 Frame Format 1 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_1_slot_8` | 4 | Select which input channel data will be put in slot_8 of each frame |
@@ -413,7 +485,7 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 | `cfg_tx_1_slot_14` | 3 | Select which input channel data will be put in slot_14 of each frame |
 | `cfg_tx_1_slot_15` | 3 | Select which input channel data will be put in slot_15 of each frame |
 
-### 6.21 TX Channel 3 Frame Format 2 Regeister 
+### 6.24 TX Channel 3 Frame Format 2 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_1_slot_16` | 4 | Select which input channel data will be put in slot_16 of each frame |
@@ -425,7 +497,7 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 | `cfg_tx_1_slot_22` | 3 | Select which input channel data will be put in slot_22 of each frame |
 | `cfg_tx_1_slot_23` | 3 | Select which input channel data will be put in slot_23 of each frame |
 
-### 6.22 TX Channel 3 Frame Format 3 Regeister 
+### 6.25 TX Channel 3 Frame Format 3 Regeister 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_tx_1_slot_24` | 4 | Select which input channel data will be put in slot_24 of each frame |
@@ -437,27 +509,27 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 | `cfg_tx_1_slot_30` | 3 | Select which input channel data will be put in slot_30 of each frame |
 | `cfg_tx_1_slot_31` | 3 | Select which input channel data will be put in slot_31 of each frame |
 
-### 6.23 RX FIFO Flush Register 
+### 6.26 RX FIFO Flush Register 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_rx_fifo_flush` | 16 | Each bit provides rx flush signal of each rx channel respectively |
 
-### 6.24 RX FIFO Overflow Register 
+### 6.27 RX FIFO Overflow Register 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_rx_fifo_overflow` | 16 | Each bit represents rx FIFO overflow each rx channel respectively |
 
-### 6.25 TX FIFO Overflow Register 
+### 6.28 TX FIFO Overflow Register 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_rx_fifo_overflow` | 4 | Each bit represents tx FIFO overflow each tx channel respectively |
 
-### 6.26 TX FIFO Flush Register 
+### 6.29 TX FIFO Flush Register 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_rx_fifo_flush` | 4 | Each bit provides tx FIFO Flush for each tx channel respectively |
 
-### 6.27 RX channal 0 IDLE Count Register 
+### 6.30 RX channal 0 IDLE Count Register 
 | Sigal | Width | Description |
 |---|---:|---|
 | `cfg_rx_0_idle_count` | 32 | When RX channel 0 is enabled, if RX channel 0 does not receive valid data for cfg_rx_0_idle_count merge_clk cycles, assert rx channel 0 timeout interrupt |
@@ -465,41 +537,7 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 ---
 
 ## 7. FSM Design
-
-
-```text
-                         +---------+
-                         |  IDLE   |
-                         +----+----+
-                              |
-                              | Merge Enable && TX channel enable
-                              v
-                     +--------+---------+
-                     |                  |
-                     |   WAIT_FRAME     |
-                     |                  |
-                     | TX slot_0 from   |
-                     | RX FIFO ready ?  |
-                     +--------+---------+
-                              |
-                              | Yes
-                              v
-                     +--------+---------+
-                     |                  |
-                     |  WRITE_FRAME     |
-                     |                  |
-                     | Write one slot   |
-                     | into TX FIFO     |
-                     +--------+---------+
-                              |
-                  Last slot ? |
-                     No       | Yes
-                      |       |
-                      +-------+
-                              |
-                              v
-                        WAIT_FRAME
-```
+refer to merge.draw.io
 
 # 8. Future Design Discussion 
 The IP does not append `slot_id`, `slot_valid`, or frame metadata to the stream.

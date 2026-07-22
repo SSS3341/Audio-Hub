@@ -1,4 +1,4 @@
-# Audio Hub Channel Mix IP Hardware Design Description
+# Audio Hub Channel Mixer IP Hardware Design Description
 
 **Document version:** v1.0  
 **Module name:** `audio_channel_merge`  
@@ -6,7 +6,7 @@
 
 ## 1. Overview
 
-The Channel Mix IP supports merge 8 independent input rx audio streams into 4 channel output streams, each output stream can be merged of any combination of the 8 intput streams. Software needs to config corresponding registers to choose the merge style of each output tx channel.
+The Channel Mixer IP supports merge 8 independent input rx audio streams into 4 channel output streams, each output stream can be merged of any combination of the 8 intput streams. Software needs to config corresponding registers to choose the merge style of each output tx channel.
 
 Each input channel is carried on an independent `valid/ready/data` interface. The input port number identifies the source channel. The output remains 32 bits wide and carries one sample per successful transfer(i.e per valid/ready handshake). Output slot identity is therefore represented implicitly by the transfer order.
 
