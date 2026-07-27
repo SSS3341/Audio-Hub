@@ -529,10 +529,15 @@ Setting bit N to enable slot N inside one frame, tx channel frame enable needs t
 |---|---:|---|
 | `cfg_rx_fifo_flush` | 4 | Each bit provides tx FIFO Flush for each tx channel respectively |
 
-### 6.30 RX channal 0 IDLE Count Register 
+### 6.30 RX channal x IDLE Count Register 
 | Sigal | Width | Description |
 |---|---:|---|
-| `cfg_rx_0_idle_count` | 32 | When RX channel 0 is enabled, if RX channel 0 does not receive valid data for cfg_rx_0_idle_count merge_clk cycles, assert rx channel 0 timeout interrupt |
+| `cfg_rx_x_idle_count` | 32 | When RX channel x is enabled, if RX channel x does not receive valid data for cfg_rx_x_idle_count merge_clk cycles, assert rx channel x timeout interrupt |
+
+### 6.31 RX channal x Slot Register 
+| Sigal | Width | Description |
+|---|---:|---|
+| `cfg_rx_x_slot_biten` | 32 | When RX channel x is enabled, cfg_rx_x_slot_biten contorls the valid bit of each slot. For example,   |
 
 ---
 
