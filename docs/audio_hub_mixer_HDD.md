@@ -13,24 +13,7 @@
 
 ## 1. Introduction
 
-### 1.1 Purpose
-
-This document defines the functional behavior, microarchitecture, interfaces, register map, timing, error handling, programming model, and verification requirements of the Audio Hub Mixer IP.
-
-The Mixer combines selected synchronous input samples by signed addition. It supports up to eight independent input audio streams and four independent output audio streams. Each output has its own selection mask register and may select any subset of the eight inputs. The same input sample may be used by multiple outputs, but is consumed only once per mixing process.
-
-### 1.2 Scope
-
-The IP performs only sample routing and summation:
-
-- 8 input streams.
-- 4 output streams.
-- Independent input-selection mask for each output.
-- Unsigned/Signed parallel accumulation.  TBD
-- Configurable saturation or wraparound at the output width.
-- Ready/valid flow control with input and output buffering.
-
-### 1.3 Explicit exclusions
+The Mixer combines selected synchronous input samples by signed or unsigned addition. It supports up to eight independent input audio streams and four independent output audio streams. Each output has its own selection mask register and may select any subset of the eight inputs. The same input sample may be used by multiple outputs, but is consumed only once per mixing process.
 
 The following functions are outside the Mixer:
 
@@ -48,14 +31,14 @@ Gain adjustment shall be performed by the Audio Hub Digital Gain IP. Channel pac
 ## 2. Features
 
 - Supports 8 inputs and 4 outputs.
-- Default 32-bit signed PCM; 16-bit and 24-bit PCM are also supported through `DATA_WIDTH`.
-- Four independent 8-input selection masks registers.
-- One input may feed any number of outputs without being popped multiple times.
-- Balanced signed adder tree for each output.
-- Internal accumulator width of `DATA_WIDTH + 3` bits for lossless summation of eight full-scale inputs.
-- Output saturation enabled by default; wraparound mode is available for compatibility.
-- Per-channel input FIFO and per-channel output FIFO.
-- Independent output ready/valid interfaces.
+- Supports 32-bit PCM; 16-bit and 24-bit data configured through register.
+- Supports 4 independent 8-input selection registers for each output channel.
+- Supports signed or unsigned input mixing configured by registers.
+- Supports unsigned input to signed output mixing result conversion.
+- Internal accumulator width of `DATA_WIDTH + 3` bits for lossless summation for debugging .
+- Supports output saturation with a overflow status flag.
+- Supports per-channel input FIFO and per-channel output FIFO.
+- Independent input/output ready/valid interfaces.
 
 ---
 
@@ -72,29 +55,23 @@ Gain adjustment shall be performed by the Audio Hub Digital Gain IP. Channel pac
 
 ### 4.1 Mixing equation
 
-For output `o`, input `i`, and mixing slot `n`:
+For output `o`, if choose input `i,j,k` , and mixing slot `n`:
 
 ```text
-select[o][i] = output_enable[o] & input_enable[i] 
-
-acc[o,n] = sum(input[i,n]) for every i where select[o][i] = 1
-
-output[o,n] = saturate_or_wrap(acc[o,n], DATA_WIDTH)
+output_o_slot[n] = input_i_slot[n] + input_j_slot[n] + input_k_slot[n]
 ```
 
 No coefficient multiplication is performed. A selected input contributes exactly its signed PCM value. An unselected input contributes zero.
 
 ### 4.2 Sample alignment contract
 
-The Mixer aligns streams by sample order, not by timestamp. The first sample popped from every required FIFO belongs to the same logical sample time, followed by the second sample from each FIFO, and so on.
+The Mixer aligns streams by sample order. The first sample popped from every required FIFO belongs to the same logical sample time, followed by the second sample from each FIFO, and so on.
 
 Therefore:
 
 - The Mixer waits when any required input FIFO is empty.
 - Temporary arrival skew is absorbed by the input FIFOs.
 - The Mixer reports error when any of the input stream timeout.
-
-Software should disable and flush the Mixer when a matrix change also changes stream alignment membership.
 
 ### 4.3 Input acceptance
 
@@ -293,10 +270,8 @@ ACC_WIDTH = DATA_WIDTH + ceil(log2(8))
 
 | Bits | Description |
 | ---: | --- |
-| `[7:0]` | `bit i = 1` selects input `i` into output `n`. |
+| `[7:0]` | `bit i = 1, j = 1` selects input `i, j` to be mixed into output `n`. |
 | `[31:8]` | Reserved. |
-
-An enabled output whose effective matrix row is zero causes the commit to fail with `CFG_ZERO_SOURCE`.
 
 ### 8.5 `SAT_CTRL` — offset `0x028`
 

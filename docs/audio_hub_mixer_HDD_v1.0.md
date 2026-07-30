@@ -14,11 +14,7 @@
 
 ## 1. Introduction
 
-### 1.1 Purpose
-
-This document defines the functional behavior, microarchitecture, interfaces, register map, timing, error handling, programming model, and verification requirements of the Audio Hub Mixer IP.
-
-The Mixer combines selected synchronous PCM input samples by signed addition. It supports up to eight independent input audio streams and four independent output audio streams. Each output has its own 8-bit selection mask and may select any subset of the eight inputs. The same input sample may be used by multiple outputs, but is consumed only once per mixing epoch.
+The Mixer combines selected synchronous input stream samples by signed addition. It supports up to eight independent input audio streams and four independent output audio streams. Each output has its own 8-bit selection mask and may select any subset of the eight inputs. The same input sample may be used by multiple outputs, but is consumed only once per mixing epoch.
 
 ### 1.2 Scope
 
