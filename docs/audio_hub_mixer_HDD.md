@@ -243,7 +243,7 @@ Standard APB-4 slave port for register configuration.
 | `[5:11]` | `FSM_STATE` | Encoded internal state for debug. |
 | `[31:12]` | Reserved | Read zero. |
 
-### 8.3 Inpute channel control registers
+### 8.3 Channel control registers
 
 | Bits | Name | Description |
 | ---: | --- | --- |
@@ -255,36 +255,25 @@ Standard APB-4 slave port for register configuration.
 
 | Bits | Name | Description |
 | ---: | --- | --- |
-| `[3:0]` | `TX_ENABLE` | 8 output tx channel enable signals, each bit represent 1 tx channel enable control, for example: set bit0=1 enables output channel 0. |
+| `[3:0]` | `TX_ENABLE` | 4 output tx channel enable signals, each bit represent 1 tx channel enable control, for example: set bit0=1 enables output channel 0. |
 | `[7:4]` | `SATURATION` | Each bit corresponds to one output channel, setting 1 means the channel output addition is saturated |
 | `[31:8]` | Reserved | Read zero. |
 
-### 8.5 `CFG_STATUS` — offset `0x02C`
+### 8.5 Output channel source select registers
 
 | Bits | Name | Description |
 | ---: | --- | --- |
-| `[0]` | `SHADOW_DIRTY` | A shadow register changed after the last successful commit. |
-| `[1]` | `COMMIT_PENDING` | Commit accepted and waiting for a safe slot boundary. |
-| `[2]` | `ACTIVE_VALID` | Current active configuration is valid. |
-| `[3]` | `LAST_COMMIT_OK` | Last completed commit succeeded. Cleared by a new commit request. |
-| `[15:8]` | `CFG_SEQ` | Increments after each successful commit. Wraps naturally. |
-| `[31:16]` | Reserved | Read zero. |
+| `[7:0]` | `TX_0_SRC` | For output channel 0, select which input channels to be mixed, each bit controls 1 input channel. |
+| `[15:8]` | `TX_1_SRC` | For output channel 1, select which input channels to be mixed, each bit controls 1 input channel. |
+| `[23:16]` | `TX_2_SRC` | For output channel 2, select which input channels to be mixed, each bit controls 1 input channel. |
+| `[31:24]` | `TX_3_SRC` | For output channel 3, select which input channels to be mixed, each bit controls 1 input channel. |
 
 ### 8.7 Interrupt registers
 
-`IRQ_ENABLE` and `IRQ_STATUS` use the same bit assignments:
-
 | Bit | Name | Set condition |
 | ---: | --- | --- |
-| 0 | `SAT_OUT0` | Output 0 full-precision sum exceeded the output range. |
-| 1 | `SAT_OUT1` | Output 1 full-precision sum exceeded the output range. |
-| 2 | `SAT_OUT2` | Output 2 full-precision sum exceeded the output range. |
-| 3 | `SAT_OUT3` | Output 3 full-precision sum exceeded the output range. |
-| 4 | `INPUT_STARVE` | Scheduler first enters a wait caused by a required empty input. |
-| 5 | `OUTPUT_BLOCKED` | Scheduler first enters a wait caused by an enabled full output FIFO. |
-| 6 | `CFG_DONE` | Shadow configuration was successfully activated. |
-| 7 | `CFG_ERROR` | Configuration commit was rejected. |
-| 8 | `FLUSH_DONE` | Requested flush completed. |
+| `[7:0]` | `INPUT_STARVE` | Scheduler first enters a wait caused by a required empty input. |
+| `[11:8]` | `OUTPUT_BLOCKED` | Scheduler first enters a wait caused by an enabled full output FIFO. |
 | 31:8.| Reserved | Read zero. |
 
 `IRQ_STATUS` bits are sticky and cleared by writing 1. Saturation status is set even when wrap mode is selected.
