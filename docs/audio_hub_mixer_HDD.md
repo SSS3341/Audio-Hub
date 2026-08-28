@@ -104,25 +104,65 @@ Results from one slots are written atomically into the noted enabled output FIFO
 
 If one output stalls, other output FIFOs continue draining. All output tx channel has its own independent FIFO. Once asserted, `output_valid[o]` remains asserted and `output_data[o]` remains stable until `output_ready[o]` is observed high.
 
-### 4.6 Disable and flush behavior
-
-- Clearing `CTRL.EN` prevents new slots generation from starting. In-flight arithmetic completes and already queued output data remains available to drain.
-- `CTRL.FLUSH` immediately stops acceptance, invalidates in-flight work, clears all input and output FIFOs, and then sets `IRQ_STATUS.FLUSH_DONE`.
-- `CTRL.SOFT_RESET` performs a flush, disables the engine, clears active and shadow configuration, status, and counters, and restores reset defaults.
-
-`FLUSH` intentionally discards buffered audio samples and shall be used only when a discontinuity is acceptable or required for realignment.
-
 ---
 
 ## 5. System Architecture
 
-visio diagram
+The architecture consists of receive stream control, a per-channel FIFO bank, mixer scheduling/output control, and output selection/status logic.
+
+```text
+                            +----------------------+
+rx_valid[N-1:0] ----------->|                      |
+rx_data[N-1:0][31:0] ------>|    RX Stream FSM     |
+rx_ready[N-1:0] <-----------|                      |
+                            +----------+-----------+
+                                       |
+                wr_en[N-1:0]           |
+                wdata[N-1:0][31:0]     |
+                                       v
+                +------------------------------------------+
+                |            RX FIFO Bank                  |
+                | +---------+ +---------+        +--------+|
+                | | FIFO 0  | | FIFO 1  |  ...   | FIFO N ||
+                | +---------+ +---------+        +--------+|
+                +--------------------+---------------------+
+                                     |
+                rdata[N-1:0][31:0]   |
+                empty[N-1:0]         |
+                word_cnt[N-1:0]      |
+                                     v
+      +------------------+------------------+------------------+
+      |                  |                  |                  |
+      v                  v                  v                  v
++-----------+      +-----------+      +-----------+      +-----------+
+| TX0 Mixer |      | TX1 Mixer |      | TX2 Mixer |      | TX3 Mixer |
+| Scheduler |      | Scheduler |      | Scheduler |      | Scheduler |
++-----+-----+      +-----+-----+      +-----+-----+      +-----+-----+
+      |                  |                  |                  |
+      v                  v                  v                  v
++-----------+      +-----------+      +-----------+      +-----------+
+| TX FIFO 0 |      | TX FIFO 1 |      | TX FIFO 2 |      | TX FIFO 3 |
++-----+-----+      +-----+-----+      +-----+-----+      +-----+-----+
+      |                  |                  |                  |
+ valid/ready/data   valid/ready/data   valid/ready/data   valid/ready/data
+      |                  |                  |                  |
+      +---------------- Crossbar sources ---------------------+
+
+                                       |
+                              tx_valid/ready/data
+                                       |
+                                       |               
+                                       v               
+                                Crossbar output     
+                                         
+```
+
 
 ## 6. Datapath Design
 
-All operands are sign-extended to `ACC_WIDTH` before addition. Intermediate nodes retain `ACC_WIDTH`; this width can represent the exact sum of eight `DATA_WIDTH` signed operands.
+All operands are sign-extended or unsign-extended to `ACC_WIDTH` (32 bits) before addition. Intermediate nodes retain `ACC_WIDTH`; this width can represent the exact sum of eight `DATA_WIDTH` signed operands.
 
-### 6.1 Saturation and wraparound
+### 6.1 Saturation
 
 The representable output range is:
 
@@ -131,15 +171,13 @@ MAX =  2^(DATA_WIDTH-1) - 1
 MIN = -2^(DATA_WIDTH-1)
 ```
 
-When `SAT_CTRL.SAT_EN = 1`:
+When saturation happens:
 
 ```text
 acc > MAX  -> output = MAX
 acc < MIN  -> output = MIN
 otherwise  -> output = acc[DATA_WIDTH-1:0]
 ```
-
-When `SAT_EN = 0`, the low `DATA_WIDTH` bits are returned, producing two's-complement wraparound. Overflow detection and counters remain active in both modes.
 
 There is no rounding step because the Mixer performs no scaling and discards no fractional bits.
 
@@ -154,15 +192,13 @@ There is no rounding step because the Mixer performs no scaling and discards no 
 | `clk_i` | Input | 1 | Mixer core, stream, and APB clock. |
 | `rst_n_i` | Input | 1 | Active-low reset; asynchronous assertion and synchronous deassertion to `clk_i`. |
 
-The baseline IP is single-clock. If APB, producer, or consumer logic uses another clock, CDC shall be implemented outside this IP.
-
 ### 7.2 Audio input streams
 
 | Signal | Direction | Width | Description |
 | --- | --- | ---: | --- |
 | `input_valid_i` | Input | `NUM_INPUTS` | Per-input sample-valid vector. |
 | `input_ready_o` | Output | `NUM_INPUTS` | Per-input sample-ready vector. |
-| `input_data_i` | Input | `NUM_INPUTS × DATA_WIDTH` | Signed PCM samples, one packed element per input. |
+| `input_data_i` | Input | `NUM_INPUTS × DATA_WIDTH` | sample data of per input channel. |
 
 ### 7.3 Audio output streams
 
@@ -170,7 +206,10 @@ The baseline IP is single-clock. If APB, producer, or consumer logic uses anothe
 | --- | --- | ---: | --- |
 | `output_valid_o` | Output | `NUM_OUTPUTS` | Per-output result-valid vector. |
 | `output_ready_i` | Input | `NUM_OUTPUTS` | Per-output result-ready vector. |
-| `output_data_o` | Output | `NUM_OUTPUTS × DATA_WIDTH` | Signed mixed PCM result for each output. |
+| `output_data_o` | Output | `NUM_OUTPUTS × DATA_WIDTH` | mixed result for each output. |
+
+### 7.4 APB slave 
+Standard APB-4 slave port for register configuration.
 
 ### 7.5 Interrupt
 
@@ -182,105 +221,45 @@ The baseline IP is single-clock. If APB, producer, or consumer logic uses anothe
 
 ## 8. Register Map
 
-Derived parameters:
+### 8.1 CTRL register 
 
-```text
-For loseless summation data:
-ACC_WIDTH = DATA_WIDTH + ceil(log2(8))
-          = DATA_WIDTH + 3
-```
+| Bits | Name | Access | Description |
+| ---: | --- | ---: | --- |
+| `[0]` | `MIXER_EN` | RW |  Enable starting new mixing slots. |
+| `[1]` | `FLUSH` | WO |  Write 1 to flush pipeline and all FIFOs; self-clearing. |
+| `[2]` | `SOFT_RESET` | WO |  Write 1 for internal reset; self-clearing. |
+| `[3]` | `COUNTER_CLEAR` | WO |  Write 1 to clear slot timeout counters. |
+| `[31:4]` | Reserved | — |  Write zero; read zero. |
 
-### 8.1 Register summary
-
-| Offset | Name | Access | Reset | Description |
-| ---: | --- | --- | ---: | --- |
-| `0x008` | `CTRL` | RW/WO | `0x00000000` | Enable, flush, soft reset, commit, counter clear. |
-| `0x00C` | `STATUS` | RO | `0x00000002` | Runtime state summary. |
-| `0x010` | `INPUT_ENABLE` | RW-S | `0x00000000` | Shadow input enable mask. |
-| `0x014` | `OUTPUT_ENABLE` | RW-S | `0x00000000` | Shadow output enable mask. |
-| `0x018` | `OUT0_MATRIX` | RW-S | `0x00000000` | Shadow source mask for output 0. |
-| `0x01C` | `OUT1_MATRIX` | RW-S | `0x00000000` | Shadow source mask for output 1. |
-| `0x020` | `OUT2_MATRIX` | RW-S | `0x00000000` | Shadow source mask for output 2. |
-| `0x024` | `OUT3_MATRIX` | RW-S | `0x00000000` | Shadow source mask for output 3. |
-| `0x028` | `SAT_CTRL` | RW-S | `0x00000001` | Shadow saturation control. |
-| `0x02C` | `CFG_STATUS` | RO | `0x00000000` | Commit sequence and configuration validity. |
-| `0x030` | `IRQ_ENABLE` | RW | `0x00000000` | Interrupt enable mask. |
-| `0x034` | `IRQ_STATUS` | W1C/RO | `0x00000000` | Maskable sticky interrupt status. |
-| `0x038` | `ERROR_STATUS` | W1C/RO | `0x00000000` | Sticky configuration error detail. |
-| `0x03C` | `STARVE_STATUS` | RO | `0x00000000` | Required empty-input indication. |
-| `0x040` | `BLOCK_STATUS` | RO | `0x00000000` | Enabled full-output indication. |
-| `0x044` | `IN_FIFO_EMPTY` | RO | implementation | Input FIFO empty bits. |
-| `0x048` | `IN_FIFO_FULL` | RO | `0x00000000` | Input FIFO full bits. |
-| `0x04C` | `OUT_FIFO_EMPTY` | RO | implementation | Output FIFO empty bits. |
-| `0x050` | `OUT_FIFO_FULL` | RO | `0x00000000` | Output FIFO full bits. |
-| `0x060`–`0x07C` | `IN_FIFO_LEVEL0`–`7` | RO | `0x0` | Per-input FIFO occupancy. |
-| `0x080`–`0x08C` | `OUT_FIFO_LEVEL0`–`3` | RO | `0x0` | Per-output FIFO occupancy. |
-| `0x08.` | `MIX_COUNT_LO` | RO | `0x00000000` | Mixing-slot counter bits `[31:0]`. |
-| `0x08.` | `MIX_COUNT_HI` | RO | `0x00000000` | Mixing-slot counter bits `[63:32]`. |
-| `0x08.`–`0x0A4` | `SAT_COUNT0`–`3` | RO | `0x00000000` | Per-output saturating overflow counters. |
-| `0x0B0` | `ACTIVE_INPUT_ENABLE` | RO | `0x00000000` | Active input enable mask. |
-| `0x0B4` | `ACTIVE_OUTPUT_ENABLE` | RO | `0x00000000` | Active output enable mask. |
-| `0x0B8`–`0x0C4` | `ACTIVE_OUT0_MATRIX`–`3` | RO | `0x00000000` | Active matrix rows. |
-| `0x0C8` | `ACTIVE_SAT_CTRL` | RO | `0x00000001` | Active saturation control. |
-| `0x0FC` | `SCRATCH` | RW | `0x00000000` | Software scratch register. |
-
-`RW-S` denotes a shadow register. The value affects the datapath only after a successful `CFG_COMMIT`.
-
-### 8.2 `CTRL` — offset `0x008`
-
-| Bits | Name | Access | Reset | Description |
-| ---: | --- | --- | ---: | --- |
-| `[0]` | `MIXER_EN` | RW | 0 | Enable starting new mixing slots. |
-| `[1]` | `FLUSH` | WO | 0 | Write 1 to flush pipeline and all FIFOs; self-clearing. |
-| `[2]` | `SOFT_RESET` | WO | 0 | Write 1 for internal reset; self-clearing. |
-| `[3]` | `COUNTER_CLEAR` | WO | 0 | Write 1 to clear slot and saturation counters. |
-| `[31:5]` | Reserved | — | 0 | Write zero; read zero. |
-
-### 8.3 `STATUS` — offset `0x00C`
+### 8.2 STATUS register
 
 | Bits | Name | Description |
 | ---: | --- | --- |
 | `[0]` | `ACTIVE` | `EN=1`, active configuration valid, and at least one output enabled. |
 | `[1]` | `IDLE` | No arithmetic slot is in flight. Output FIFOs may still contain data. |
-| `[2]` | `PIPE_BUSY` | Datapath is processing a captured slot. |
-| `[3]` | `CFG_PENDING` | A valid commit request is waiting for the next slot boundary. |
-| `[4]` | `FLUSH_BUSY` | FIFO and pipeline flush is in progress. |
-| `[5]` | `INPUT_STARVED` | At least one required input FIFO is empty. |
-| `[6]` | `OUTPUT_BLOCKED` | At least one enabled output FIFO is full. |
-| `[7:11]` | `FSM_STATE` | Encoded internal state for debug. |
+| `[2]` | `FLUSH_BUSY` | FIFO and pipeline flush is in progress. |
+| `[3]` | `INPUT_STARVED` | At least one required input FIFO is empty. |
+| `[4]` | `OUTPUT_BLOCKED` | At least one enabled output FIFO is full. |
+| `[5:11]` | `FSM_STATE` | Encoded internal state for debug. |
 | `[31:12]` | Reserved | Read zero. |
 
-### 8.4 Enable and matrix registers
+### 8.3 Inpute channel control registers
 
-#### `INPUT_ENABLE` — offset `0x010`
+| Bits | Name | Description |
+| ---: | --- | --- |
+| `[7:0]` | `RX_ENABLE` | 8 input rx channel enable signals, each bit represent 1 rx channel enable control, for example: set bit0=1 enables input channel 0. |
+| `[15:8]` | `SIGNED` | Each bit corresponds to one input channel, setting 1 means the channel inputs signed data, otherwise unsigned |
+| `[31:16]` | Reserved | Read zero. |
 
-| Bits | Description |
-| ---: | --- |
-| `[7:0]` | One bit per input; 1 permits that input to participate. |
-| `[31:8]` | Reserved. |
+### 8.4 Output channel control registers
 
-#### `OUTPUT_ENABLE` — offset `0x014`
+| Bits | Name | Description |
+| ---: | --- | --- |
+| `[3:0]` | `TX_ENABLE` | 8 output tx channel enable signals, each bit represent 1 tx channel enable control, for example: set bit0=1 enables output channel 0. |
+| `[7:4]` | `SATURATION` | Each bit corresponds to one output channel, setting 1 means the channel output addition is saturated |
+| `[31:8]` | Reserved | Read zero. |
 
-| Bits | Description |
-| ---: | --- |
-| `[3:0]` | One bit per output; 1 generates an output result for each slot. |
-| `[31:4]` | Reserved. |
-
-#### `OUTn_MATRIX` — offsets `0x018` to `0x024`
-
-| Bits | Description |
-| ---: | --- |
-| `[7:0]` | `bit i = 1, j = 1` selects input `i, j` to be mixed into output `n`. |
-| `[31:8]` | Reserved. |
-
-### 8.5 `SAT_CTRL` — offset `0x028`
-
-| Bits | Name | Access | Reset | Description |
-| ---: | --- | --- | ---: | --- |
-| `[0]` | `SAT_EN` | RW-S | 1 | 1: clamp on overflow; 0: two's-complement wrap. |
-| `[31:1]` | Reserved | — | 0 | Write zero; read zero. |
-
-### 8.6 `CFG_STATUS` — offset `0x02C`
+### 8.5 `CFG_STATUS` — offset `0x02C`
 
 | Bits | Name | Description |
 | ---: | --- | --- |
