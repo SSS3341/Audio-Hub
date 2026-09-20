@@ -240,7 +240,7 @@ Standard APB-4 slave port for register configuration.
 | `[3]` | `OUTPUT_BLOCKED` | At least one enabled output FIFO is full. |
 | `[31:4]` | Reserved | Read zero. |
 
-### 8.3 Channel control registers
+### 8.3 RX Channel control registers
 
 | Bits | Name | Description |
 | ---: | --- | --- |
@@ -248,13 +248,14 @@ Standard APB-4 slave port for register configuration.
 | `[15:8]` | `SIGNED` | Each bit corresponds to one input channel, setting 1 means the channel inputs signed data, otherwise unsigned |
 | `[31:16]` | Reserved | Read zero. |
 
-### 8.4 Output channel control registers
+### 8.4 Output channel control and status registers
 
 | Bits | Name | Description |
 | ---: | --- | --- |
 | `[3:0]` | `TX_ENABLE` | 4 output tx channel enable signals, each bit represent 1 tx channel enable control, for example: set bit0=1 enables output channel 0. |
-| `[7:4]` | `SATURATION` | Each bit corresponds to one output channel, setting 1 means the channel output addition is saturated |
-| `[31:8]` | Reserved | Read zero. |
+| `[7:4]` | `SIGNED` | Each bit corresponds to one output channel, setting 1 means the channel output addition is signed |
+| `[11:8]` | `SATURATION` | Each bit corresponds to one output channel, 1 means the channel output addition is siturated |
+| `[31:12]` | Reserved | Read zero. |
 
 ### 8.5 Output channel source select registers
 
@@ -275,17 +276,13 @@ Standard APB-4 slave port for register configuration.
 
 `IRQ_STATUS` bits are sticky and cleared by writing 1. Saturation status is set even when wrap mode is selected.
 
-### 8.8 `ERROR_STATUS` — offset `0x038`
+### 8.8 ERROR_STATUS register 
 
 | Bit | Name | Meaning |
 | ---: | --- | --- |
 | 0 | `CFG_ZERO_SOURCE` | At least one enabled output has no effective selected input. |
-| 1 | `CFG_INVALID_SEL` | Configuration selected an unimplemented input or output. |
-| 2 | `CFG_BUSY` | A commit was requested while another commit was pending. |
-| 3 | `CFG_RESERVED` | A reserved configuration bit was written as 1. |
-| 31:4 | Reserved | Read zero. |
-
-Errors are sticky W1C. A failed commit does not alter the active configuration.
+| 1 | `CFG_INVALID_SEL` | Configuration selected an unimplemented input or output, for example: signed and unsigned channel mixed addition |
+| 31:2 | Reserved | Read zero. |
 
 ### 8.8.FIFO status
 
@@ -294,7 +291,7 @@ Errors are sticky W1C. A failed commit does not alter the active configuration.
 - FIFO empty/full registers contain one bit per implemented FIFO.
 - Each FIFO-level register reports occupancy from zero through the configured depth.
 
-### 8.10 Counters
+### 8.9 Counters
 
 - `MIX_COUNT` increments once when one slot is atomically enqueued.
 - `SAT_COUNTn` increments for every overflowing slot on output `n`, regardless of saturation mode.
