@@ -159,27 +159,26 @@ rx_ready[N-1:0] <-----------|                      |
 
 
 ## 6. Datapath Design
+Mixer IP supports mixing of unsigned or signed data from input channel by config input channel control registers.
 
-All operands are sign-extended or unsign-extended to `ACC_WIDTH` (32 bits) before addition. Intermediate nodes retain `ACC_WIDTH`; this width can represent the exact sum of eight `DATA_WIDTH` signed operands.
+All operands are sign/unsiged-extended to `ACC_WIDTH`(32 bit) before addition. Intermediate nodes retain `ACC_WIDTH`; this width can represent the exact sum of eight `DATA_WIDTH` signed operands for debug.
 
 ### 6.1 Saturation
 
-The representable output range is:
+For signed addition, the representable output range is:
 
 ```text
 MAX =  2^(DATA_WIDTH-1) - 1
 MIN = -2^(DATA_WIDTH-1)
 ```
 
-When saturation happens:
+When add overflow:
 
 ```text
 acc > MAX  -> output = MAX
 acc < MIN  -> output = MIN
 otherwise  -> output = acc[DATA_WIDTH-1:0]
 ```
-
-There is no rounding step because the Mixer performs no scaling and discards no fractional bits.
 
 ---
 
@@ -189,16 +188,16 @@ There is no rounding step because the Mixer performs no scaling and discards no 
 
 | Signal | Direction | Width | Description |
 | --- | --- | ---: | --- |
-| `clk_i` | Input | 1 | Mixer core, stream, and APB clock. |
-| `rst_n_i` | Input | 1 | Active-low reset; asynchronous assertion and synchronous deassertion to `clk_i`. |
+| `clk_mixer` | Input | 1 | Mixer core, stream, and APB clock. |
+| `rst_n_mixer` | Input | 1 | Active-low reset; asynchronous assertion and synchronous deassertion to `clk_mixer`. |
 
 ### 7.2 Audio input streams
 
 | Signal | Direction | Width | Description |
 | --- | --- | ---: | --- |
-| `input_valid_i` | Input | `NUM_INPUTS` | Per-input sample-valid vector. |
-| `input_ready_o` | Output | `NUM_INPUTS` | Per-input sample-ready vector. |
-| `input_data_i` | Input | `NUM_INPUTS × DATA_WIDTH` | sample data of per input channel. |
+| `valid_i` | Input | `NUM_INPUTS` | Per-input sample-valid vector. |
+| `ready_o` | Output | `NUM_INPUTS` | Per-input sample-ready vector. |
+| `data_i` | Input | `NUM_INPUTS × DATA_WIDTH` | valid data of each input channel  |
 
 ### 7.3 Audio output streams
 
@@ -237,11 +236,9 @@ Standard APB-4 slave port for register configuration.
 | ---: | --- | --- |
 | `[0]` | `ACTIVE` | `EN=1`, active configuration valid, and at least one output enabled. |
 | `[1]` | `IDLE` | No arithmetic slot is in flight. Output FIFOs may still contain data. |
-| `[2]` | `FLUSH_BUSY` | FIFO and pipeline flush is in progress. |
-| `[3]` | `INPUT_STARVED` | At least one required input FIFO is empty. |
-| `[4]` | `OUTPUT_BLOCKED` | At least one enabled output FIFO is full. |
-| `[5:11]` | `FSM_STATE` | Encoded internal state for debug. |
-| `[31:12]` | Reserved | Read zero. |
+| `[2]` | `INPUT_STARVED` | At least one required input FIFO is empty. |
+| `[3]` | `OUTPUT_BLOCKED` | At least one enabled output FIFO is full. |
+| `[31:4]` | Reserved | Read zero. |
 
 ### 8.3 Channel control registers
 
